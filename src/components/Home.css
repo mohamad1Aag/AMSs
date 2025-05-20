@@ -8,11 +8,12 @@
   }
   
   .header {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    padding: 20px;
-    align-items: center;
+    display: flex ;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        padding: 20px;
+        align-items: center;
+        flex-direction: row;
   }
   
   .logo {
@@ -25,13 +26,13 @@
     display: none;   
   }
   
-  .nav a {
+  .nav .a {
     margin: 0 10px;
     text-decoration: none;
     color: black;
     font-weight: bold;
   }
-  .nav a:hover{
+  .nav .a:hover{
    color: #00b4db;
   }
   
@@ -108,13 +109,13 @@
       display: flex; 
     }
 
-    .nav a {
+    .nav .a {
         margin: 5px 8px;
         font-size: 16px;
         padding: 3px;
     }
 
-    .nav a:hover {
+    .nav .a:hover {
       color: #00b4db;
     }
 
@@ -133,8 +134,7 @@
       border: 'none';
       cursor: 'pointer';
       position: relative;
-      left: -41%;
-      border-radius: 12px;
+      left: -44%;
 
     }
 }
