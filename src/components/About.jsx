@@ -4,6 +4,7 @@ import Header from "./Header";
 function About() {
   return (<>
   <Header />
+  <div className="bigcontainerer">
     <div className="About-container">
       <header>
         <h1>من نحن - موقع AMS للتجارة العامة</h1>
@@ -36,7 +37,10 @@ function About() {
       <footer>
         <p>© 2025 مجموعة AMS. جميع الحقوق محفوظة.</p>
       </footer>
-    </div></>
+    </div>
+    </div>
+    </>
+
   );
 }
 
