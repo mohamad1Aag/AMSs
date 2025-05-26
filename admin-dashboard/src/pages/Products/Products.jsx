@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "./Products.css"; // ربط ملف CSS منفصل للمنتجات
-import Sidebar from "../../layouts/sidebar";
+import Sidebar from "../../layouts/Sidebar";
 
 export default function Product() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
