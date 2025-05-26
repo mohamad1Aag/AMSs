@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "./Orders.css"; // ملف CSS خاص بالطلبات
-import Sidebar from "../layouts/sidebar";
+import Sidebar from "../layouts/Sidebar";
 
 export default function Orders() {
   const [sidebarOpen, setSidebarOpen] = useState(false);

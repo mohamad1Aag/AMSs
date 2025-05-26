@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "./Category.css"; // ربط ملف CSS خاص بالأقسام
-import Sidebar from "../../layouts/sidebar";
+import Sidebar from "../../layouts/Sidebar";
 
 export default function Category() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
