@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "./Reports.css"; // لاحظ غيرت اسم ملف CSS لتخصيصه
-import Sidebar from "../../layouts/Sidebar";
+import Sidebar from "../layouts/Sidebar";
 
 export default function Reports() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
