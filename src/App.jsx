@@ -11,6 +11,7 @@ import User from "../admin-dashboard/src/pages/Users/User";
 import Product from "../admin-dashboard/src/pages/Products/Products.jsx";
 import Category from "../admin-dashboard/src/pages/Categories/Category.jsx";
 import Orders from "../admin-dashboard/src/Orders/Orders.jsx";
+import Reports from "../admin-dashboard/src/Reports/Reports.jsx";
 function App() {
   const [user, setUser] = useState(null);
   const handleLogin = userData => {
@@ -48,6 +49,7 @@ function App() {
         <Route path="/Product" element={<Product />} />
         <Route path="/Category" element={<Category />} />
         <Route path="/Orders" element={<Orders />} />
+        <Route path="/Reports" element={<Reports />} />
 
       </Routes>
     </BrowserRouter>
