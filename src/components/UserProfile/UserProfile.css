@@ -1,0 +1,93 @@
+.profile-container {
+    padding: 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    background: #f1f5f9;
+    min-height: 100vh;
+    direction: rtl;
+    font-family: "Arial", sans-serif;
+  }
+  
+  .profile-card {
+    background: #ffffff;
+    padding: 2rem;
+    border-radius: 15px;
+    box-shadow: 0 4px 12px rgba(0, 180, 219, 0.2);
+    width: 100%;
+    max-width: 500px;
+  }
+  
+  .profile-title {
+    margin-bottom: 1.5rem;
+    font-size: 1.8rem;
+    color: #00b4db;
+    text-align: center;
+    font-weight: bold;
+  }
+  
+  .profile-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+  }
+  
+  .form-group {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .form-group label {
+    margin-bottom: 5px;
+    color: #444;
+    font-weight: 600;
+  }
+  
+  .form-group input {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border 0.3s ease;
+  }
+  
+  .form-group input:focus {
+    border-color: #00b4db;
+    outline: none;
+  }
+  
+  .btn-save {
+    padding: 12px;
+    background-color: #00b4db;
+    color: white;
+    font-size: 1.1rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+  
+  .btn-save:hover {
+    background-color: #0095c7;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 600px) {
+    .profile-container {
+      padding: 1rem;
+    }
+  
+    .profile-card {
+      padding: 1.5rem;
+    }
+  
+    .profile-title {
+      font-size: 1.5rem;
+    }
+  
+    .btn-save {
+      font-size: 1rem;
+    }
+  }
+  

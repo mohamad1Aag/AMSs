@@ -23,13 +23,13 @@ function Header() {
         </svg>
       </button>
       <nav className={`nav ${navVisible ? "active" : ""}`}>
-        <Link className="a" to="/">Logo</Link>
         <Link className="a" to="/">Home</Link>
         <Link className="a" to="/AdminDash">AdminDash</Link>
         <Link className="a" to="/services">Services</Link>
         <Link className="a" to="/about">AboutUs</Link>
         <Link className="a" to="/contact">Contact</Link>
-        <Link className="a" to="/business">Our Business</Link>
+        <Link className="a" to="/UserProfile">UserProfile</Link>
+      <Link className="a" to="/ProductList">cart</Link>
       </nav>
     </header>
   );

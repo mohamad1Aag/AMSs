@@ -26,8 +26,8 @@ function Sidebar({ isOpen, onClose }) {
             <li><Link to="/Product">Products</Link></li>
             <li><Link to="/Category">Categories</Link></li>
             <li><Link to="/Orders">Orders</Link></li>
-            <li><Link to="/reports">Reports</Link></li>
-            <li><Link to="/settings">Settings</Link></li>
+            <li><Link to="/Reports">Reports</Link></li>
+            <li><Link to="/Settings">Settings</Link></li>
           </ul>
 
         </div>

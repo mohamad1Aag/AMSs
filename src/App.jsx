@@ -1,59 +1,93 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { useState } from 'react';
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { useState, useEffect } from 'react';
+
 import Home from "./components/Home";
-import Services from "./components/Services"; // مثال صفحة خدمات
+import Services from "./components/Services";
 import About from "./components/About";
 import Contact from "./components/Contact";
 import Business from "./components/Business";
-import LoginForm from './components/LoginForm/LoginForm';
 import AdminDash from '../admin-dashboard/src/components/AdminDash.jsx';
 import User from "../admin-dashboard/src/pages/Users/User";
 import Product from "../admin-dashboard/src/pages/Products/Products.jsx";
 import Category from "../admin-dashboard/src/pages/Categories/Category.jsx";
 import Orders from "../admin-dashboard/src/Orders/Orders.jsx";
 import Reports from "../admin-dashboard/src/Reports/Reports.jsx";
+import Settings from "../admin-dashboard/src/Settings/Settings.jsx";
+import UserProfile from "./components/UserProfile/UserProfile.jsx";
+import ProductList from "./components/Cart/ProductList.jsx";
+import Login from '../admin-dashboard/src/components/Login'; // تسجيل دخول الأدمن
+
 function App() {
-  const [user, setUser] = useState(null);
-  const handleLogin = userData => {
-    setUser(userData);
+  // حالة تسجيل دخول الأدمن
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) setIsAuthenticated(true);
+  }, []);
+
+  const handleLogin = () => {
+    setIsAuthenticated(true);
   };
 
-  if (!user) {
-    return <LoginForm onLogin={handleLogin} />;
-  }
- 
- 
-  return (<>
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    setIsAuthenticated(false);
+  };
 
-    <div style={{ padding: '2rem', textAlign: 'center' }}>
-    <h1>أهلًا {user.username}!</h1>
-    <button onClick={() => {
-      fetch('/logout').then(() => setUser(null));
-    }}>
-      تسجيل الخروج
-    </button>
-  </div>
-  
-  
-
+  return (
     <BrowserRouter>
-    
+      {isAuthenticated && (
+        <div style={{ padding: '1rem', textAlign: 'center' }}>
+          <button onClick={handleLogout}>🔓 تسجيل الخروج</button>
+        </div>
+      )}
+
       <Routes>
+        {/* صفحات عامة */}
         <Route path="/" element={<Home />} />
-        <Route path="/AdminDash" element={<AdminDash />} />
         <Route path="/services" element={<Services />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
-        <Route path="/business" element={<Business />} /> 
-        <Route path="/users" element={<User />} />
-        <Route path="/Product" element={<Product />} />
-        <Route path="/Category" element={<Category />} />
-        <Route path="/Orders" element={<Orders />} />
-        <Route path="/Reports" element={<Reports />} />
+        <Route path="/business" element={<Business />} />
+        <Route path="/UserProfile" element={<UserProfile />} />
+        <Route path="/ProductList" element={<ProductList />} />
 
+        {/* تسجيل دخول الأدمن */}
+        <Route path="/login" element={<Login onLogin={handleLogin} />} />
+
+        {/* لوحة تحكم الأدمن محمية */}
+        <Route
+          path="/AdminDash"
+          element={isAuthenticated ? <AdminDash /> : <Navigate to="/login" />}
+        />
+        <Route
+          path="/users"
+          element={isAuthenticated ? <User /> : <Navigate to="/login" />}
+        />
+        <Route
+          path="/Product"
+          element={isAuthenticated ? <Product /> : <Navigate to="/login" />}
+        />
+        <Route
+          path="/Category"
+          element={isAuthenticated ? <Category /> : <Navigate to="/login" />}
+        />
+        <Route
+          path="/Orders"
+          element={isAuthenticated ? <Orders /> : <Navigate to="/login" />}
+        />
+        <Route
+          path="/Reports"
+          element={isAuthenticated ? <Reports /> : <Navigate to="/login" />}
+        />
+        <Route
+          path="/Settings"
+          element={isAuthenticated ? <Settings /> : <Navigate to="/login" />}
+        />
       </Routes>
     </BrowserRouter>
-    </>);
+  );
 }
 
 export default App;
