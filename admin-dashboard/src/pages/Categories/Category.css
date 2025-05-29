@@ -173,11 +173,16 @@
 @media (max-width: 768px) {
   .allsection {
     padding: 0rem;
-    width: 90%;
+    width: 80%;
+  }
+  .allsection .sectiontable{
+    width: 100%; /* نملأ العرض */
+    font-size: 0.75rem; /* نص أصغر */
+    table-layout: fixed; /* منع الجدول من التمدد غير الضروري */
   }
 
-  .allsection td img {
-    width: 50px;
+   .tablesectionimage {
+    width: 25px !important;
   }
   .allsection input[type="text"] {
     padding: 0rem;

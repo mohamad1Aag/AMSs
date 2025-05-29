@@ -80,7 +80,7 @@ const ListSections = () => {
       {filteredSections.length === 0 ? (
         <p>لا توجد نتائج مطابقة.</p>
       ) : (
-        <table>
+        <table className="sectiontable">
           <thead>
             <tr>
               <th>الاسم</th>
@@ -95,7 +95,7 @@ const ListSections = () => {
                 <td><strong>{section.name}</strong></td>
                 <td>{section.description}</td>
                 <td>
-                <img
+                <img className="tablesectionimage"
                   src={section.image}
                   alt="صورة القسم"
                   style={{ width: '160px', height: 'auto', borderRadius: '8px' }}
