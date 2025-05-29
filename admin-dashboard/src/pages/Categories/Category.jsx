@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import "./Category.css"; // ربط ملف CSS خاص بالأقسام
 import Sidebar from "../../layouts/Sidebar";
+import AddSection from './AddSection';
+import ListSections from './ListSections';
+
 
 export default function Category() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -42,63 +45,10 @@ export default function Category() {
       )}
 
       <Sidebar isOpen={sidebarOpen} onClose={toggleSidebar} />
-
-      <div className="category-container">
-        <h2 className="title">إدارة الأقسام</h2>
-
-        <input
-          type="text"
-          placeholder="ابحث باسم القسم..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="search-input"
-        />
-
-        <div className="table-wrapper">
-          <table className="category-table">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>اسم القسم</th>
-                <th>الوصف</th>
-                <th>الحالة</th>
-                <th>إجراءات</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredCategories.length > 0 ? (
-                filteredCategories.map((category, index) => (
-                  <tr key={category.id}>
-                    <td data-label="#">{index + 1}</td>
-                    <td data-label="اسم القسم">{category.name}</td>
-                    <td data-label="الوصف">{category.description}</td>
-                    <td data-label="الحالة">
-                      <span
-                        className={`status ${
-                          category.status === "مفعل" ? "active" : "inactive"
-                        }`}
-                      >
-                        {category.status}
-                      </span>
-                    </td>
-                    <td data-label="إجراءات">
-                      <button className="btn btn-view">عرض</button>
-                      <button className="btn btn-edit">تعديل</button>
-                      <button className="btn btn-delete">حذف</button>
-                    </td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan="5" style={{ textAlign: "center" }}>
-                    لا توجد نتائج مطابقة
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-      </div>
+     
+      
+      <AddSection />
+          <ListSections />
     </>
   );
 }

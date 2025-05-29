@@ -85,6 +85,17 @@ function App() {
           path="/Settings"
           element={isAuthenticated ? <Settings /> : <Navigate to="/login" />}
         />
+        <Route
+          path="/add-section"
+          element={isAuthenticated ? <Settings /> : <Navigate to="/AddSection" />}
+        />
+        <Route
+          path="/list-sections"
+          element={isAuthenticated ? <Settings /> : <Navigate to="/ListSections" />}
+        />
+      
+       
+
       </Routes>
     </BrowserRouter>
   );
