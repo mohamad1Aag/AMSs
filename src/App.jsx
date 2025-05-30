@@ -19,6 +19,7 @@ import ListProducts  from "../admin-dashboard/src/pages/Products/ListProducts";
 import AddProduct from "../admin-dashboard/src/pages/Products/AddProduct.jsx";
 
 import Login from '../admin-dashboard/src/components/Login'; // تسجيل دخول الأدمن
+import SectionDetails from './components/SectionDetails'; // الصفحة اللي بدنا نعملها
  // تسجيل دخول الأدمن
 
 
@@ -106,6 +107,7 @@ function App() {
           path="/products"
           element={isAuthenticated ? <ListProducts /> : <Navigate to="/products" />}
         />
+          <Route path="/section/:id" element={<SectionDetails />} />
       
        
 
