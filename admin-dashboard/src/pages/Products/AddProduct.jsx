@@ -54,7 +54,7 @@ const AddProduct = () => {
     }
 
     const formData = new FormData();
-    formData.append('section_id', sectionId);
+    formData.append('section', sectionId);
     formData.append('name', name);
     formData.append('price', price);
     formData.append('image', image);

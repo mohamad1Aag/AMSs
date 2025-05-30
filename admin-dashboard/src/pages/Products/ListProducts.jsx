@@ -19,7 +19,7 @@ const ListProducts = () => {
   };
 
   const filteredProducts = products.filter(product =>
-    product.product_name.toLowerCase().includes(searchTerm.toLowerCase())
+    product.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const handleEdit = (product) => {
@@ -36,15 +36,15 @@ const ListProducts = () => {
   const handleUpdate = async () => {
     try {
       const formData = new FormData();
-      formData.append('product_name', editingProduct.product_name);
-      formData.append('product_description', editingProduct.product_description);
-      formData.append('product_price', editingProduct.product_price);
+      formData.append('name', editingProduct.name);
+      // formData.append('name', editingProduct.name);
+      formData.append('price', editingProduct.price);
       if (selectedFile) {
-        formData.append('product_image', selectedFile);
+        formData.append('image', selectedFile);
       }
 
       const response = await axios.put(
-        `https://my-backend-dgp2.onrender.com/api/products/edit/${editingProduct._id}`,
+        `https://my-backend-dgp2.onrender.com/api/products/${editingProduct._id}`,
         formData,
         {
           headers: {
@@ -105,13 +105,13 @@ const ListProducts = () => {
           <tbody>
             {filteredProducts.map(product => (
               <tr key={product._id}>
-                <td><strong>{product.product_name}</strong></td>
-                <td>{product.product_description}</td>
-                <td>{product.product_price} ر.س</td>
+                <td><strong>{product.name}</strong></td>
+                <td>{product.name}</td>
+                <td>{product.price} ر.س</td>
                 <td>
                   <img
                     className="tablesectionimage"
-                    src={product.product_image}
+                    src={product.image}
                     alt="صورة المنتج"
                     style={{ width: '160px', height: 'auto', borderRadius: '8px' }}
                   />
@@ -131,24 +131,18 @@ const ListProducts = () => {
           <h3>تعديل المنتج</h3>
           <input
             type="text"
-            value={editingProduct.product_name}
+            value={editingProduct.name}
             onChange={(e) =>
-              setEditingProduct({ ...editingProduct, product_name: e.target.value })
+              setEditingProduct({ ...editingProduct, name: e.target.value })
             }
             placeholder="اسم المنتج"
           />
-          <textarea
-            value={editingProduct.product_description}
-            onChange={(e) =>
-              setEditingProduct({ ...editingProduct, product_description: e.target.value })
-            }
-            placeholder="الوصف"
-          />
+          
           <input
             type="number"
-            value={editingProduct.product_price}
+            value={editingProduct.price}
             onChange={(e) =>
-              setEditingProduct({ ...editingProduct, product_price: e.target.value })
+              setEditingProduct({ ...editingProduct, price: e.target.value })
             }
             placeholder="السعر"
           />
