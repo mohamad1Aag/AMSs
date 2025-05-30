@@ -9,10 +9,14 @@ const ListProducts = () => {
   const [selectedFile, setSelectedFile] = useState(null);
 
   useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  const fetchProducts = () => {
     axios.get('https://my-backend-dgp2.onrender.com/api/products')
       .then(res => setProducts(res.data))
       .catch(err => console.error('خطأ بجلب المنتجات:', err));
-  }, []);
+  };
 
   const filteredProducts = products.filter(product =>
     product.product_name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -55,9 +59,21 @@ const ListProducts = () => {
 
       setEditingProduct(null);
       setSelectedFile(null);
-
     } catch (error) {
       alert('فشل تعديل المنتج، حاول مرة أخرى');
+      console.error(error);
+    }
+  };
+
+  const handleDelete = async (id) => {
+    const confirmDelete = window.confirm("هل أنت متأكد أنك تريد حذف هذا المنتج؟");
+    if (!confirmDelete) return;
+
+    try {
+      await axios.delete(`https://my-backend-dgp2.onrender.com/api/products/delete/${id}`);
+      setProducts(products.filter(product => product._id !== id));
+    } catch (error) {
+      alert("حدث خطأ أثناء حذف المنتج");
       console.error(error);
     }
   };
@@ -102,6 +118,7 @@ const ListProducts = () => {
                 </td>
                 <td>
                   <button onClick={() => handleEdit(product)}>تعديل</button>
+                  <button onClick={() => handleDelete(product._id)} style={{ marginRight: '0.5rem', backgroundColor: '#d9534f', color: 'white' }}>حذف</button>
                 </td>
               </tr>
             ))}
