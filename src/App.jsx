@@ -15,7 +15,12 @@ import Reports from "../admin-dashboard/src/Reports/Reports.jsx";
 import Settings from "../admin-dashboard/src/Settings/Settings.jsx";
 import UserProfile from "./components/UserProfile/UserProfile.jsx";
 import ProductList from "./components/Cart/ProductList.jsx";
+import ListProducts  from "../admin-dashboard/src/pages/Products/ListProducts";
+import AddProduct from "../admin-dashboard/src/pages/Products/AddProduct.jsx";
+
 import Login from '../admin-dashboard/src/components/Login'; // تسجيل دخول الأدمن
+ // تسجيل دخول الأدمن
+
 
 function App() {
   // حالة تسجيل دخول الأدمن
@@ -92,6 +97,14 @@ function App() {
         <Route
           path="/list-sections"
           element={isAuthenticated ? <Settings /> : <Navigate to="/ListSections" />}
+        />
+        <Route
+          path="/add-product"
+          element={isAuthenticated ? <AddProduct  /> : <Navigate to="/add-product" />}
+        />
+        <Route
+          path="/products"
+          element={isAuthenticated ? <ListProducts /> : <Navigate to="/products" />}
         />
       
        
