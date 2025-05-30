@@ -24,23 +24,22 @@ function LocationMarker({ selectedPosition, setSelectedPosition }) {
   return selectedPosition ? <Marker position={selectedPosition} /> : null;
 }
 
-function MapModal({ isOpen, onClose, setDeliveryLocation }) {
+function MapModal({ isOpen, onClose, onConfirmLocation }) {
   const [selectedPosition, setSelectedPosition] = useState(null);
 
   const latLatakia = [35.537, 35.776];
   const zoomLevel = 12;
 
-  useEffect(() => {
-    setDeliveryLocation(selectedPosition);
-  }, [selectedPosition, setDeliveryLocation]);
 
-  const handleConfirm = () => {
-    if (selectedPosition) {
-      onClose();
-    } else {
-      alert('يرجى اختيار موقع على الخريطة.');
-    }
-  };
+
+ const handleConfirm = () => {
+  if (selectedPosition) {
+    onConfirmLocation(selectedPosition); // نمرر الموقع المؤكد
+  } else {
+    alert('يرجى اختيار موقع على الخريطة.');
+  }
+};
+
 
   const handleCancel = () => {
     setSelectedPosition(null);

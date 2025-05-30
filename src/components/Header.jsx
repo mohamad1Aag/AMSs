@@ -29,6 +29,7 @@ function Header() {
         <Link className="a" to="/about">AboutUs</Link>
         <Link className="a" to="/contact">Contact</Link>
         <Link className="a" to="/UserProfile">UserProfile</Link>
+        <Link className="a" to="/CaptainDashboard">CaptainDashboard</Link>
       <Link className="a" to="/ProductList">cart</Link>
       </nav>
     </header>

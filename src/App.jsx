@@ -17,9 +17,12 @@ import UserProfile from "./components/UserProfile/UserProfile.jsx";
 import ProductList from "./components/Cart/ProductList.jsx";
 import ListProducts  from "../admin-dashboard/src/pages/Products/ListProducts";
 import AddProduct from "../admin-dashboard/src/pages/Products/AddProduct.jsx";
-
+import 'leaflet/dist/leaflet.css';
+import 'leaflet-routing-machine/dist/leaflet-routing-machine.css';
 import Login from '../admin-dashboard/src/components/Login'; // تسجيل دخول الأدمن
 import SectionDetails from './components/SectionDetails'; // الصفحة اللي بدنا نعملها
+import CaptainDashboard from "../captian/CaptainDashboard";
+
  // تسجيل دخول الأدمن
 
 
@@ -108,6 +111,7 @@ function App() {
           element={isAuthenticated ? <ListProducts /> : <Navigate to="/products" />}
         />
           <Route path="/section/:id" element={<SectionDetails />} />
+          <Route path="/CaptainDashboard" element={<CaptainDashboard />} />
       
        
 

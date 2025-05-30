@@ -111,11 +111,17 @@ function Cart() {
         
       )}
 
-      <MapModal
-        isOpen={isMapOpen}
-        onClose={handleConfirmLocation}  // تغلق المودال وتؤكد الموقع
-        setDeliveryLocation={setTempLocation} // تعيين الموقع المؤقت داخل المودال
-      />
+<MapModal
+  isOpen={isMapOpen}
+  onClose={() => setIsMapOpen(false)}
+  onConfirmLocation={(confirmedLocation) => {
+    setDeliveryLocation(confirmedLocation);
+    localStorage.setItem('deliveryLocation', JSON.stringify(confirmedLocation));
+    alert(`📍 تم اختيار موقع التوصيل: ${confirmedLocation.lat}, ${confirmedLocation.lng}`);
+    setIsMapOpen(false);
+  }}
+/>
+
     </div>
   );
 }
