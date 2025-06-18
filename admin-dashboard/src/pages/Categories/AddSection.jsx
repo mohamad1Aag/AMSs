@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react'; // ✅ أضف useRef
+import React, { useState, useRef } from 'react';
 import axios from 'axios';
 
 const AddSection = () => {
@@ -6,7 +6,7 @@ const AddSection = () => {
   const [description, setDescription] = useState('');
   const [image, setImage] = useState(null);
   const [message, setMessage] = useState('');
-  const fileInputRef = useRef(null); // ✅
+  const fileInputRef = useRef(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -30,42 +30,57 @@ const AddSection = () => {
       setName('');
       setDescription('');
       setImage(null);
-      if (fileInputRef.current) fileInputRef.current.value = ''; // ✅ مسح اختيار الصورة
+      if (fileInputRef.current) fileInputRef.current.value = '';
     } catch (err) {
       setMessage(`❌ خطأ: ${err.response?.data?.error || 'حدث خطأ'}`);
     }
   };
 
   return (
-    <div className="addsection" style={{ padding: '2rem' }}>
-      <h2>إضافة قسم جديد</h2>
-      <form className="addSectionForm" onSubmit={handleSubmit}>
-        <input
-          type="text"
-          placeholder="اسم القسم"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          required
-        />
+    <div className="p-6 bg-gradient-to-r from-purple-800 via-pink-600 to-yellow-100 min-h-screen flex flex-col items-center">
+      <div className="bg-white rounded-xl shadow-lg p-6 w-full max-w-lg">
+        <h2 className="text-2xl font-bold text-purple-800 mb-6 text-center">إضافة قسم جديد</h2>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <input
+            type="text"
+            placeholder="اسم القسم"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            required
+            className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-purple-600"
+          />
+          <textarea
+            placeholder="وصف القسم"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            className="w-full p-3 border rounded-md resize-none h-24 focus:outline-none focus:ring-2 focus:ring-purple-600"
+          />
+          <input
+            type="file"
+            accept="image/*"
+            ref={fileInputRef}
+            onChange={(e) => setImage(e.target.files[0])}
+            required
+            className="w-full"
+          />
+          <button
+            type="submit"
+            className="w-full bg-purple-700 hover:bg-purple-800 text-white font-semibold py-3 rounded-md transition"
+          >
+            ➕ إضافة
+          </button>
+        </form>
 
-        <textarea
-          placeholder="وصف القسم"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-        />
-
-        <input
-          type="file"
-          accept="image/*"
-          ref={fileInputRef} // ✅
-          onChange={(e) => setImage(e.target.files[0])}
-          required
-        />
-
-        <button type="submit">➕ إضافة</button>
-      </form>
-
-      {message && <p>{message}</p>}
+        {message && (
+          <p
+            className={`mt-4 text-center font-bold ${
+              message.includes('✅') ? 'text-green-600' : 'text-red-600'
+            }`}
+          >
+            {message}
+          </p>
+        )}
+      </div>
     </div>
   );
 };

@@ -1,9 +1,14 @@
-import React, { useState, useEffect } from 'react';
-import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
+import React, { useState } from 'react';
+import {
+  MapContainer,
+  TileLayer,
+  Marker,
+  useMapEvents,
+} from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
-import './MapModal.css';
-
 import L from 'leaflet';
+
+// إعداد أيقونة Leaflet
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl:
@@ -18,7 +23,7 @@ function LocationMarker({ selectedPosition, setSelectedPosition }) {
   useMapEvents({
     click(e) {
       setSelectedPosition(e.latlng);
-    }
+    },
   });
 
   return selectedPosition ? <Marker position={selectedPosition} /> : null;
@@ -26,24 +31,19 @@ function LocationMarker({ selectedPosition, setSelectedPosition }) {
 
 function MapModal({ isOpen, onClose, onConfirmLocation }) {
   const [selectedPosition, setSelectedPosition] = useState(null);
-
   const latLatakia = [35.537, 35.776];
   const zoomLevel = 12;
 
-
-
- const handleConfirm = () => {
-  if (selectedPosition) {
-    onConfirmLocation(selectedPosition); // نمرر الموقع المؤكد
-  } else {
-    alert('يرجى اختيار موقع على الخريطة.');
-  }
-};
-
+  const handleConfirm = () => {
+    if (selectedPosition) {
+      onConfirmLocation(selectedPosition);
+    } else {
+      alert('يرجى اختيار موقع على الخريطة.');
+    }
+  };
 
   const handleCancel = () => {
     setSelectedPosition(null);
-    setDeliveryLocation(null);
     onClose();
   };
 
@@ -55,8 +55,7 @@ function MapModal({ isOpen, onClose, onConfirmLocation }) {
     navigator.geolocation.getCurrentPosition(
       (pos) => {
         const { latitude, longitude } = pos.coords;
-        const latlng = { lat: latitude, lng: longitude };
-        setSelectedPosition(latlng);
+        setSelectedPosition({ lat: latitude, lng: longitude });
       },
       () => alert('تعذر الحصول على الموقع الحالي.'),
       { enableHighAccuracy: true }
@@ -66,14 +65,26 @@ function MapModal({ isOpen, onClose, onConfirmLocation }) {
   if (!isOpen) return null;
 
   return (
-    <div className="modal-overlay">
-      <div className="modal-content">
-        <h3>حدد موقع التوصيل (ضمن نطاق اللاذقية)</h3>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70 p-4">
+      <div className="bg-white rounded-xl shadow-xl w-full max-w-3xl p-6 space-y-6 relative">
+        {/* زر الإغلاق */}
+        <button
+          onClick={handleCancel}
+          className="absolute top-4 left-4 text-gray-500 hover:text-red-600 text-2xl font-bold"
+          aria-label="إغلاق"
+        >
+          ×
+        </button>
+
+        <h3 className="text-2xl font-bold text-purple-800 text-center">
+          حدد موقع التوصيل (ضمن نطاق اللاذقية)
+        </h3>
+
         <MapContainer
           center={latLatakia}
           zoom={zoomLevel}
           style={{ height: '400px', width: '100%' }}
-          whenCreated={map => {
+          whenCreated={(map) => {
             const bounds = [
               [35.38, 35.60],
               [35.65, 35.95],
@@ -90,13 +101,26 @@ function MapModal({ isOpen, onClose, onConfirmLocation }) {
             attribution='&copy; <a href="https://osm.org/copyright">OpenStreetMap</a>'
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
-          <LocationMarker selectedPosition={selectedPosition} setSelectedPosition={setSelectedPosition} />
+          <LocationMarker
+            selectedPosition={selectedPosition}
+            setSelectedPosition={setSelectedPosition}
+          />
         </MapContainer>
 
-        <div className="modal-buttons">
-          <button onClick={handleUseCurrentLocation}>📍 تحديد موقعي الحالي</button>
-          <button onClick={handleCancel}>❌ إلغاء التحديد</button>
-          <button onClick={handleConfirm}>✅ تأكيد الموقع</button>
+        <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
+          <button
+            onClick={handleUseCurrentLocation}
+            className="bg-yellow-400 text-purple-900 px-5 py-3 rounded-lg font-semibold hover:bg-yellow-300 transition shadow"
+          >
+            📍 تحديد موقعي الحالي
+          </button>
+
+          <button
+            onClick={handleConfirm}
+            className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg shadow transition font-semibold"
+          >
+            ✅ تأكيد الموقع
+          </button>
         </div>
       </div>
     </div>

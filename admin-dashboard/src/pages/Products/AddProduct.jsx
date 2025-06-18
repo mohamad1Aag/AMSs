@@ -11,14 +11,12 @@ const AddProduct = () => {
   const [message, setMessage] = useState('');
   const fileRef = useRef(null);
 
-  // 🟢 جلب الأقسام
   useEffect(() => {
     axios.get('https://my-backend-dgp2.onrender.com/api/sections')
       .then(res => setSections(res.data))
       .catch(err => console.error('خطأ في جلب الأقسام:', err));
   }, []);
 
-  // 🟢 جلب المنتجات
   const fetchProducts = async () => {
     try {
       const res = await axios.get('https://my-backend-dgp2.onrender.com/api/products');
@@ -32,7 +30,6 @@ const AddProduct = () => {
     fetchProducts();
   }, []);
 
-  // 🟢 حذف المنتج
   const handleDelete = async (productId) => {
     if (!window.confirm('هل أنت متأكد أنك تريد حذف هذا المنتج؟')) return;
     try {
@@ -44,7 +41,6 @@ const AddProduct = () => {
     }
   };
 
-  // 🟢 إضافة منتج
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -79,23 +75,16 @@ const AddProduct = () => {
   };
 
   return (
-    <div style={{ padding: '2rem' }}>
-      {/* ✅ نموذج إضافة منتج */}
-      <div style={{
-        maxWidth: '500px',
-        margin: 'auto',
-        background: '#f9f9f9',
-        borderRadius: '12px',
-        boxShadow: '0 0 10px rgba(0,0,0,0.1)',
-        padding: '2rem',
-      }}>
-        <h2 style={{ textAlign: 'center', marginBottom: '1.5rem' }}>إضافة منتج جديد</h2>
-        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+    <div className="p-6 bg-gradient-to-r from-purple-800 via-pink-600 to-yellow-100 min-h-screen">
+      {/* نموذج إضافة منتج */}
+      <div className="max-w-xl mx-auto bg-white rounded-xl shadow-lg p-6 mb-10">
+        <h2 className="text-2xl font-bold text-center text-purple-800 mb-4">إضافة منتج جديد</h2>
+        <form onSubmit={handleSubmit} className="space-y-4">
           <select
             value={sectionId}
             onChange={(e) => setSectionId(e.target.value)}
             required
-            style={{ padding: '0.7rem', borderRadius: '8px', border: '1px solid #ccc' }}
+            className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-purple-500"
           >
             <option value="">-- اختر القسم --</option>
             {sections.map(section => (
@@ -109,7 +98,7 @@ const AddProduct = () => {
             value={name}
             onChange={(e) => setName(e.target.value)}
             required
-            style={{ padding: '0.7rem', borderRadius: '8px', border: '1px solid #ccc' }}
+            className="w-full p-2 border rounded focus:outline-none"
           />
 
           <input
@@ -118,7 +107,7 @@ const AddProduct = () => {
             value={price}
             onChange={(e) => setPrice(e.target.value)}
             required
-            style={{ padding: '0.7rem', borderRadius: '8px', border: '1px solid #ccc' }}
+            className="w-full p-2 border rounded focus:outline-none"
           />
 
           <input
@@ -127,78 +116,65 @@ const AddProduct = () => {
             ref={fileRef}
             onChange={(e) => setImage(e.target.files[0])}
             required
-            style={{ padding: '0.5rem' }}
+            className="w-full"
           />
 
-          <button type="submit" style={{
-            backgroundColor: '#00b4db',
-            color: 'white',
-            padding: '0.8rem',
-            border: 'none',
-            borderRadius: '8px',
-            cursor: 'pointer',
-            fontWeight: 'bold'
-          }}>
+          <button
+            type="submit"
+            className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 rounded transition"
+          >
             ➕ إضافة المنتج
           </button>
         </form>
 
         {message && (
-          <p style={{
-            marginTop: '1rem',
-            textAlign: 'center',
-            fontWeight: 'bold',
-            color: message.includes('✅') ? 'green' : 'red'
-          }}>
+          <p className={`text-center mt-4 font-bold ${message.includes('✅') ? 'text-green-600' : 'text-red-600'}`}>
             {message}
           </p>
         )}
       </div>
 
-      {/* ✅ عرض المنتجات */}
-      <div style={{ marginTop: '3rem' }}>
-        <h2 style={{ textAlign: 'center' }}>المنتجات المضافة</h2>
+      {/* جدول المنتجات */}
+      <div className="bg-white p-6 rounded-xl shadow-lg">
+        <h2 className="text-xl font-bold text-center text-purple-700 mb-4">المنتجات المضافة</h2>
         {products.length === 0 ? (
-          <p style={{ textAlign: 'center' }}>لا توجد منتجات بعد.</p>
+          <p className="text-center text-gray-500">لا توجد منتجات بعد.</p>
         ) : (
-          <table style={{
-            width: '100%',
-            borderCollapse: 'collapse',
-            marginTop: '1rem',
-            direction: 'rtl'
-          }}>
-            <thead>
-              <tr style={{ backgroundColor: '#eee' }}>
-                <th style={{ padding: '10px', border: '1px solid #ccc' }}>الاسم</th>
-                <th style={{ padding: '10px', border: '1px solid #ccc' }}>السعر</th>
-                <th style={{ padding: '10px', border: '1px solid #ccc' }}>الصورة</th>
-                <th style={{ padding: '10px', border: '1px solid #ccc' }}>إجراء</th>
-              </tr>
-            </thead>
-            <tbody>
-              {products.map(product => (
-                <tr key={product._id}>
-                  <td style={{ padding: '10px', border: '1px solid #ccc' }}>{product.name}</td>
-                  <td style={{ padding: '10px', border: '1px solid #ccc' }}>{product.price} ر.س</td>
-                  <td style={{ padding: '10px', border: '1px solid #ccc' }}>
-                    <img src={product.image} alt="صورة المنتج" width="100" style={{ borderRadius: '8px' }} />
-                  </td>
-                  <td style={{ padding: '10px', border: '1px solid #ccc' }}>
-                    <button onClick={() => handleDelete(product._id)} style={{
-                      backgroundColor: '#e74c3c',
-                      color: 'white',
-                      padding: '0.5rem 1rem',
-                      border: 'none',
-                      borderRadius: '6px',
-                      cursor: 'pointer'
-                    }}>
-                      🗑️ حذف
-                    </button>
-                  </td>
+          <div className="overflow-x-auto">
+            <table className="min-w-full text-sm text-center border">
+              <thead className="bg-purple-800 text-white">
+                <tr>
+                  <th className="p-2 border">الاسم</th>
+                  <th className="p-2 border">السعر</th>
+                  <th className="p-2 border">الصورة</th>
+                  <th className="p-2 border">الإجراء</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {products.map(product => (
+                  <tr key={product._id} className="border-t">
+                    <td className="p-2 border">{product.name}</td>
+                    <td className="p-2 border">{product.price} ر.س</td>
+                    <td className="p-2 border">
+                      <img
+                        src={product.image}
+                        alt="صورة المنتج"
+                        className="w-24 h-16 object-cover mx-auto rounded"
+                      />
+                    </td>
+                    <td className="p-2 border">
+                      <button
+                        onClick={() => handleDelete(product._id)}
+                        className="bg-red-500 hover:bg-red-600 text-white px-4 py-1 rounded"
+                      >
+                        🗑️ حذف
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
     </div>

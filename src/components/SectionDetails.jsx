@@ -11,11 +11,13 @@ function SectionDetails() {
     return saved ? JSON.parse(saved) : [];
   });
 
-  // للحالة الخاصة بالنافذة
+  // الحالة الخاصة بالنوافذ والكميات
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [type, setType] = useState('مفرق');
   const [showModal, setShowModal] = useState(false);
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
 
   useEffect(() => {
     fetchSection();
@@ -51,7 +53,10 @@ function SectionDetails() {
   const confirmAddToCart = () => {
     if (!selectedProduct) return;
 
-    const existingIndex = cart.findIndex((item) => item._id === selectedProduct._id && item.type === type);
+    const existingIndex = cart.findIndex(
+      (item) => item._id === selectedProduct._id && item.type === type
+    );
+
     let updatedCart;
 
     if (existingIndex !== -1) {
@@ -64,80 +69,186 @@ function SectionDetails() {
     setCart(updatedCart);
     localStorage.setItem('cart', JSON.stringify(updatedCart));
     setShowModal(false);
-    alert(`تمت إضافة ${selectedProduct.name} إلى السلة`);
+
+    setToastMessage(`✅ تمت إضافة ${selectedProduct.name} إلى السلة`);
+    setShowToast(true);
+    setTimeout(() => setShowToast(false), 3000);
   };
 
-  if (!section) return <p>جارٍ تحميل تفاصيل القسم...</p>;
+  const totalItemsInCart = cart.reduce((acc, item) => acc + item.quantity, 0);
+
+  if (!section)
+    return (
+      <p className="text-center mt-10 text-yellow-200 font-semibold">جارٍ تحميل تفاصيل القسم...</p>
+    );
 
   return (
-    <div style={{ padding: '20px' }}>
-      <h2>{section.name}</h2>
-      <img
-        src={section.image || 'https://via.placeholder.com/300'}
-        alt={section.name}
-        style={{ width: '300px', height: '200px', objectFit: 'cover' }}
-      />
-      <p>{section.description}</p>
+    <div
+      className="p-6 max-w-7xl mx-auto relative min-h-screen text-white"
+      style={{
+        background: 'linear-gradient(to right, #5a189a, #7b2ff7)', // تدرج بنفسجي
+      }}
+    >
+      {/* زر السلة مع العداد */}
+      <div className="fixed top-6 right-6 z-50">
+        <button
+          className="relative bg-yellow-400 text-purple-900 px-5 py-3 rounded-full shadow-lg hover:bg-yellow-300 transition flex items-center gap-3 text-lg font-bold"
+          onClick={() => alert('هنا يمكن إضافة صفحة السلة مستقبلاً')}
+          aria-label="عرض السلة"
+          title="عرض السلة"
+        >
+          🛒 سلة التسوق
+          {totalItemsInCart > 0 && (
+            <span className="absolute -top-2 -right-2 bg-purple-900 text-yellow-400 font-bold text-xs w-6 h-6 rounded-full flex items-center justify-center animate-pulse">
+              {totalItemsInCart}
+            </span>
+          )}
+        </button>
+      </div>
 
-      <h3 style={{ marginTop: '30px' }}>المنتجات:</h3>
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px' }}>
+      {/* القسم الأساسي */}
+      <section className="flex flex-col md:flex-row items-center md:items-start gap-10 bg-purple-900 bg-opacity-30 rounded-xl p-8 shadow-xl max-w-5xl mx-auto">
+        <img
+          src={section.image || 'https://via.placeholder.com/400x300?text=No+Image'}
+          alt={section.name}
+          className="w-full md:w-1/2 h-64 md:h-80 object-cover rounded-lg shadow-lg transition-transform duration-300 hover:scale-105"
+          loading="lazy"
+        />
+        <div className="md:w-1/2 flex flex-col justify-center">
+          <h2 className="text-4xl font-extrabold mb-4 drop-shadow-lg">{section.name}</h2>
+          <p className="text-lg leading-relaxed text-yellow-200">{section.description}</p>
+        </div>
+      </section>
+
+      {/* العنوان الفرعي للمنتجات */}
+      <h3 className="text-3xl font-bold mt-16 mb-8 drop-shadow-md">المنتجات:</h3>
+
+      {/* شبكة المنتجات */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10">
+        {products.length === 0 && (
+          <p className="col-span-full text-center text-yellow-200">لا توجد منتجات في هذا القسم.</p>
+        )}
         {products.map((product) => (
-          <div key={product._id} style={{
-            border: '1px solid #ccc',
-            borderRadius: '10px',
-            padding: '10px',
-            width: '200px',
-            backgroundColor: '#fff'
-          }}>
+          <div
+            key={product._id}
+            className="bg-white text-gray-900 rounded-xl shadow-lg p-5 flex flex-col items-center hover:shadow-2xl transition-shadow duration-300 cursor-pointer"
+          >
             <img
               src={product.image || 'https://dummyimage.com/150x150/000/fff.png&text=No+Image'}
               alt={product.name}
-              style={{ width: '100%', height: '150px', objectFit: 'cover' }}
+              className="w-full h-44 object-cover rounded-lg mb-4 transition-transform duration-300 hover:scale-110"
+              onClick={() => openModal(product)}
+              loading="lazy"
             />
-            <h4>{product.name}</h4>
-            <p>{product.price} ل.س</p>
-            <button onClick={() => openModal(product)} style={{ marginTop: '10px' }}>
+            <h4 className="font-semibold text-center text-purple-900">{product.name}</h4>
+            <p className="text-purple-800 font-bold mt-1 text-center">{product.price} ل.س</p>
+            <button
+              onClick={() => openModal(product)}
+              className="mt-5 px-6 py-2 bg-purple-700 text-white rounded-lg shadow hover:bg-purple-800 transition transform hover:-translate-y-1 active:translate-y-0"
+              aria-label={`أضف ${product.name} إلى السلة`}
+            >
               أضف إلى السلة
             </button>
           </div>
         ))}
       </div>
 
-      {/* نافذة منبثقة لتحديد الكمية */}
+      {/* نافذة تحديد الكمية والنوع */}
       {showModal && (
-        <div style={{
-          position: 'fixed', top: 0, left: 0, width: '100%', height: '100%',
-          backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex',
-          justifyContent: 'center', alignItems: 'center', zIndex: 999
-        }}>
-          <div style={{
-            backgroundColor: '#fff', padding: '20px', borderRadius: '10px',
-            width: '300px', textAlign: 'center'
-          }}>
-            <h3>تحديد الكمية</h3>
-            <p>{selectedProduct?.name}</p>
+        <div
+          className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 p-6"
+          onClick={() => setShowModal(false)}
+          aria-modal="true"
+          role="dialog"
+          aria-labelledby="modal-title"
+        >
+          <div
+            className="bg-white rounded-lg p-7 max-w-sm w-full shadow-xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3 id="modal-title" className="text-2xl font-bold mb-5 text-center text-purple-800">
+              تحديد الكمية
+            </h3>
+            <p className="mb-6 text-center text-purple-700 font-semibold">{selectedProduct?.name}</p>
 
-            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '10px' }}>
-              <button onClick={() => setQuantity((prev) => Math.max(1, prev - 1))}>-</button>
-              <span>{quantity}</span>
-              <button onClick={() => setQuantity((prev) => prev + 1)}>+</button>
+            <div className="flex justify-center items-center gap-6 mb-8">
+              <button
+                onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300 transition text-xl font-bold"
+                aria-label="إنقاص الكمية"
+              >
+                −
+              </button>
+              <span
+                className="text-2xl font-semibold select-none"
+                aria-live="polite"
+                aria-atomic="true"
+              >
+                {quantity}
+              </span>
+              <button
+                onClick={() => setQuantity((q) => q + 1)}
+                className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300 transition text-xl font-bold"
+                aria-label="زيادة الكمية"
+              >
+                +
+              </button>
             </div>
 
-            <div style={{ marginTop: '15px' }}>
-              <label>النوع: </label>
-              <select value={type} onChange={(e) => setType(e.target.value)}>
+            <div className="mb-8 text-center">
+              <label htmlFor="type" className="mr-3 font-semibold text-gray-700">
+                النوع:
+              </label>
+              <select
+                id="type"
+                value={type}
+                onChange={(e) => setType(e.target.value)}
+                className="border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-600"
+              >
                 <option value="مفرق">مفرق</option>
                 <option value="جملة">جملة</option>
               </select>
             </div>
 
-            <div style={{ marginTop: '20px' }}>
-              <button onClick={confirmAddToCart}>تأكيد الإضافة</button>{' '}
-              <button onClick={() => setShowModal(false)}>إلغاء</button>
+            <div className="flex justify-between">
+              <button
+                onClick={confirmAddToCart}
+                className="bg-purple-700 text-white px-6 py-3 rounded-lg hover:bg-purple-800 transition font-semibold"
+              >
+                تأكيد الإضافة
+              </button>
+              <button
+                onClick={() => setShowModal(false)}
+                className="bg-gray-300 px-6 py-3 rounded-lg hover:bg-gray-400 transition font-semibold"
+              >
+                إلغاء
+              </button>
             </div>
           </div>
         </div>
       )}
+
+      {/* رسالة منبثقة للتأكيد */}
+      {showToast && (
+        <div
+          className="fixed bottom-8 left-1/2 transform -translate-x-1/2 bg-green-500 text-white px-7 py-3 rounded-lg shadow-lg animate-fade-in-out z-50 font-semibold"
+          role="alert"
+          aria-live="assertive"
+        >
+          {toastMessage}
+        </div>
+      )}
+
+      {/* تأثير الرسالة المنبثقة */}
+      <style>{`
+        @keyframes fade-in-out {
+          0%, 100% {opacity: 0;}
+          10%, 90% {opacity: 1;}
+        }
+        .animate-fade-in-out {
+          animation: fade-in-out 3s ease forwards;
+        }
+      `}</style>
     </div>
   );
 }
