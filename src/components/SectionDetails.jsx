@@ -1,9 +1,11 @@
-import { useParams } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { useNavigate, useParams } from 'react-router-dom';
 
 function SectionDetails() {
   const { id } = useParams();
+  const navigate = useNavigate();
+
   const [section, setSection] = useState(null);
   const [products, setProducts] = useState([]);
   const [cart, setCart] = useState(() => {
@@ -11,7 +13,6 @@ function SectionDetails() {
     return saved ? JSON.parse(saved) : [];
   });
 
-  // الحالة الخاصة بالنوافذ والكميات
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [type, setType] = useState('مفرق');
@@ -86,14 +87,14 @@ function SectionDetails() {
     <div
       className="p-6 max-w-7xl mx-auto relative min-h-screen text-white"
       style={{
-        background: 'linear-gradient(to right, #5a189a, #7b2ff7)', // تدرج بنفسجي
+        background: 'linear-gradient(to right, #5a189a, #7b2ff7)',
       }}
     >
-      {/* زر السلة مع العداد */}
+      {/* زر السلة */}
       <div className="fixed top-6 right-6 z-50">
         <button
           className="relative bg-yellow-400 text-purple-900 px-5 py-3 rounded-full shadow-lg hover:bg-yellow-300 transition flex items-center gap-3 text-lg font-bold"
-          onClick={() => alert('هنا يمكن إضافة صفحة السلة مستقبلاً')}
+          onClick={() => navigate('/cart')}
           aria-label="عرض السلة"
           title="عرض السلة"
         >
@@ -106,7 +107,7 @@ function SectionDetails() {
         </button>
       </div>
 
-      {/* القسم الأساسي */}
+      {/* تفاصيل القسم */}
       <section className="flex flex-col md:flex-row items-center md:items-start gap-10 bg-purple-900 bg-opacity-30 rounded-xl p-8 shadow-xl max-w-5xl mx-auto">
         <img
           src={section.image || 'https://via.placeholder.com/400x300?text=No+Image'}
@@ -120,7 +121,7 @@ function SectionDetails() {
         </div>
       </section>
 
-      {/* العنوان الفرعي للمنتجات */}
+      {/* عنوان المنتجات */}
       <h3 className="text-3xl font-bold mt-16 mb-8 drop-shadow-md">المنتجات:</h3>
 
       {/* شبكة المنتجات */}
@@ -144,8 +145,7 @@ function SectionDetails() {
             <p className="text-purple-800 font-bold mt-1 text-center">{product.price} ل.س</p>
             <button
               onClick={() => openModal(product)}
-              className="mt-5 px-6 py-2 bg-purple-700 text-white rounded-lg shadow hover:bg-purple-800 transition transform hover:-translate-y-1 active:translate-y-0"
-              aria-label={`أضف ${product.name} إلى السلة`}
+              className="mt-4 px-6 py-2 bg-purple-700 text-white rounded-lg shadow hover:bg-purple-800 transition transform hover:-translate-y-1 active:translate-y-0"
             >
               أضف إلى السلة
             </button>
@@ -158,38 +158,25 @@ function SectionDetails() {
         <div
           className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 p-6"
           onClick={() => setShowModal(false)}
-          aria-modal="true"
-          role="dialog"
-          aria-labelledby="modal-title"
         >
           <div
             className="bg-white rounded-lg p-7 max-w-sm w-full shadow-xl"
             onClick={(e) => e.stopPropagation()}
           >
-            <h3 id="modal-title" className="text-2xl font-bold mb-5 text-center text-purple-800">
-              تحديد الكمية
-            </h3>
+            <h3 className="text-2xl font-bold mb-5 text-center text-purple-800">تحديد الكمية</h3>
             <p className="mb-6 text-center text-purple-700 font-semibold">{selectedProduct?.name}</p>
 
             <div className="flex justify-center items-center gap-6 mb-8">
               <button
                 onClick={() => setQuantity((q) => Math.max(1, q - 1))}
                 className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300 transition text-xl font-bold"
-                aria-label="إنقاص الكمية"
               >
                 −
               </button>
-              <span
-                className="text-2xl font-semibold select-none"
-                aria-live="polite"
-                aria-atomic="true"
-              >
-                {quantity}
-              </span>
+              <span className="text-2xl font-semibold">{quantity}</span>
               <button
                 onClick={() => setQuantity((q) => q + 1)}
                 className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300 transition text-xl font-bold"
-                aria-label="زيادة الكمية"
               >
                 +
               </button>
@@ -228,18 +215,16 @@ function SectionDetails() {
         </div>
       )}
 
-      {/* رسالة منبثقة للتأكيد */}
+      {/* الرسالة المنبثقة */}
       {showToast && (
         <div
           className="fixed bottom-8 left-1/2 transform -translate-x-1/2 bg-green-500 text-white px-7 py-3 rounded-lg shadow-lg animate-fade-in-out z-50 font-semibold"
-          role="alert"
-          aria-live="assertive"
         >
           {toastMessage}
         </div>
       )}
 
-      {/* تأثير الرسالة المنبثقة */}
+      {/* أنيميشن الرسالة */}
       <style>{`
         @keyframes fade-in-out {
           0%, 100% {opacity: 0;}

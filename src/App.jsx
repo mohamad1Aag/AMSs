@@ -189,7 +189,7 @@ import Login from '../admin-dashboard/src/components/Login'; // تسجيل دخ�
 import SectionDetails from './components/SectionDetails'; // الصفحة اللي بدنا نعملها
 import CaptainDashboard from "../captian/CaptainDashboard";
 import UserEditProfile from "../src/components/UserProfile/UserEditProfile";
-
+import Cart from '../src/components/Cart/Cart.jsx';
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userAuthenticated, setUserAuthenticated] = useState(false);
@@ -278,6 +278,7 @@ function App() {
 
           {/* لوحة تحكم الكابتن */}
           <Route path="/CaptainDashboard" element={<CaptainDashboard />} />
+          <Route path="/cart" element={<Cart />} />
         </Routes>
       </BrowserRouter>
     </>
