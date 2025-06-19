@@ -1,22 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import MapModal from './MapModal';
+import { useNavigate } from 'react-router-dom';
 
 function Cart() {
   const [cart, setCart] = useState([]);
   const [isMapOpen, setIsMapOpen] = useState(false);
   const [deliveryLocation, setDeliveryLocation] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const savedCart = localStorage.getItem('cart');
     if (savedCart) setCart(JSON.parse(savedCart));
+
     const savedLocation = localStorage.getItem('deliveryLocation');
     if (savedLocation) setDeliveryLocation(JSON.parse(savedLocation));
 
-    // تدرج خلفية الجسم (body)
     document.body.style.background = 'linear-gradient(to right, #5a189a, #7b2ff7)';
     document.body.style.minHeight = '100vh';
 
-    // تنظيف الخلفية عند إلغاء التحميل
     return () => {
       document.body.style.background = null;
       document.body.style.minHeight = null;
@@ -37,17 +38,29 @@ function Cart() {
       alert('يرجى تحديد موقع التوصيل قبل تأكيد الطلب.');
       return;
     }
+
+    const userId = localStorage.getItem('userId');
+    if (!userId) {
+      alert('يرجى تسجيل الدخول أولًا.');
+      navigate('/login');
+      return;
+    }
+
     try {
       const orderData = {
+        userId,
         products: cart.map((item) => ({
           productId: item._id || item.productId || item.id,
+          vendorId: item.vendorId,
+          name: item.name,
+          price: item.price,
           quantity: item.quantity,
           type: item.type,
         })),
         deliveryLocation,
-        totalPrice: calculateTotal(),
-        userId: '647c1b2f4f1c2b3a4d5e6789',
+        notes: 'طلب جديد من التطبيق',
       };
+
       const response = await fetch(
         'https://my-backend-dgp2.onrender.com/api/orders',
         {
@@ -56,6 +69,7 @@ function Cart() {
           body: JSON.stringify(orderData),
         }
       );
+
       const result = await response.json();
       if (response.ok) {
         alert('✅ تم إرسال الطلب بنجاح!');
@@ -63,11 +77,12 @@ function Cart() {
         setDeliveryLocation(null);
         localStorage.removeItem('cart');
         localStorage.removeItem('deliveryLocation');
+        navigate('/');
       } else {
-        alert('حدث خطأ أثناء إرسال الطلب: ' + (result.message || 'خطأ غير معروف'));
+        alert('❌ حدث خطأ أثناء إرسال الطلب: ' + (result.message || 'خطأ غير معروف'));
       }
     } catch (error) {
-      alert('خطأ في الاتصال بالخادم.');
+      alert('❌ خطأ في الاتصال بالخادم.');
       console.error(error);
     }
   };
@@ -82,9 +97,7 @@ function Cart() {
   return (
     <div
       className="p-6 max-w-5xl mx-auto min-h-screen text-white"
-      style={{
-        background: 'linear-gradient(to right, #5a189a, #7b2ff7)',
-      }}
+      style={{ background: 'linear-gradient(to right, #5a189a, #7b2ff7)' }}
     >
       <h2 className="text-4xl font-extrabold mb-8 drop-shadow-lg text-center">
         🛒 سلة المشتريات
@@ -122,8 +135,7 @@ function Cart() {
       </div>
 
       <h3 className="text-right mt-10 text-2xl font-semibold text-yellow-200 drop-shadow">
-        المجموع الكلي:{' '}
-        <span className="font-bold">{calculateTotal()} ل.س</span>
+        المجموع الكلي: <span className="font-bold">{calculateTotal()} ل.س</span>
       </h3>
 
       <div className="mt-8 flex flex-col sm:flex-row sm:justify-between gap-6">
@@ -148,8 +160,7 @@ function Cart() {
 
       {deliveryLocation && (
         <p className="mt-6 text-center font-semibold text-yellow-200 drop-shadow">
-          📌 موقع التوصيل المختار: ({deliveryLocation.lat.toFixed(5)},{' '}
-          {deliveryLocation.lng.toFixed(5)})
+          📌 موقع التوصيل المختار: ({deliveryLocation.lat.toFixed(5)}, {deliveryLocation.lng.toFixed(5)})
         </p>
       )}
 
