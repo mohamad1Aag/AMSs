@@ -2,6 +2,17 @@ import React, { useState, useEffect } from 'react';
 import MapModal from './MapModal';
 import { useNavigate } from 'react-router-dom';
 
+// دالة لفك تشفير JWT واستخراج البيانات من البايلود
+function parseJwt(token) {
+  try {
+    const base64Payload = token.split('.')[1];
+    const payload = atob(base64Payload);
+    return JSON.parse(payload);
+  } catch (e) {
+    return null;
+  }
+}
+
 function Cart() {
   const [cart, setCart] = useState([]);
   const [isMapOpen, setIsMapOpen] = useState(false);
@@ -39,12 +50,21 @@ function Cart() {
       return;
     }
 
-    const userId = localStorage.getItem('userId');
-    if (!userId) {
+    const token = localStorage.getItem('userToken');
+    if (!token) {
       alert('يرجى تسجيل الدخول أولًا.');
       navigate('/login');
       return;
     }
+
+    const payload = parseJwt(token);
+    if (!payload || !payload.id) {
+      alert('توكن غير صالح، يرجى تسجيل الدخول مجددًا.');
+      navigate('/login');
+      return;
+    }
+
+    const userId = payload.id;
 
     try {
       const orderData = {
@@ -65,7 +85,10 @@ function Cart() {
         'https://my-backend-dgp2.onrender.com/api/orders',
         {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`, // إرسال التوكن في هيدر الطلب
+          },
           body: JSON.stringify(orderData),
         }
       );
