@@ -80,7 +80,7 @@ function Cart() {
         deliveryLocation,
         notes: 'طلب جديد من التطبيق',
       };
-
+      console.log(orderData);
       const response = await fetch(
         'https://my-backend-dgp2.onrender.com/api/orders',
         {
