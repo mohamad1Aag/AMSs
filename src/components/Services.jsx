@@ -49,7 +49,9 @@ function Services() {
               لا توجد نتائج مطابقة.
             </p>
           ) : (
-           
+
+
+
             filteredSections.map((section) => (
               <Link
                 key={section._id}
@@ -58,9 +60,32 @@ function Services() {
                   transform hover:scale-105 hover:shadow-xl transition-transform duration-300"
                 title={section.name}
               >
+                
+                <div className="h-36 sm:h-44 md:h-52 overflow-hidden rounded-t-2xl sm:rounded-t-3xl">
+                  <img
+                    src={section.image || 'https://via.placeholder.com/400x300?text=No+Image'}
+                    alt={section.name || 'صورة قسم'}
+                    className="w-full h-full object-cover object-center
+                      group-hover:scale-110 transition-transform duration-300"
+                  />
+                </div>
+                <div className="p-3 sm:p-5 text-center">
+                  <h3 className="text-lg sm:text-xl font-extrabold text-purple-800 truncate">
+                    {section.name}
+                  </h3>
+                  {section.description && (
+                    <p className="mt-1 text-xs sm:text-sm text-gray-600 line-clamp-2">
+                      {section.description}
+                    </p>
+                  )}
+                </div>
                 {/* باقي المحتوى بدون تغيير */}
               </Link>
             ))
+
+
+
+           
           )}
         </div>
       </div>
