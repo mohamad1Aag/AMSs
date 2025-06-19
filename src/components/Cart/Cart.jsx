@@ -79,6 +79,7 @@ function Cart() {
         })),
         deliveryLocation,
         notes: 'طلب جديد من التطبيق',
+        total: calculateTotal(), // ✅ أضف هذا السطر
       };
       console.log(orderData);
       const response = await fetch(
