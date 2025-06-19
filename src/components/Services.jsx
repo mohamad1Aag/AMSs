@@ -52,7 +52,7 @@ function Services() {
             filteredSections.map((section) => (
               <a
                 key={section._id}
-                href={`api/by-section/${section._id}`}
+                href={`https://my-backend-dgp2.onrender.com/api/by-section/${section._id}`}
                 className="group block bg-white rounded-2xl shadow-md overflow-hidden
                   transform hover:scale-105 hover:shadow-xl transition-transform duration-300"
                 title={section.name}
