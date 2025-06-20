@@ -62,7 +62,18 @@
       "fruits": "Fruits",
       "clothing_stationery": "Clothing & Stationery",
       "ams_group": "AMS Group",
-      "all_rights_reserved": "All rights reserved"
+      "all_rights_reserved": "All rights reserved",
+      
+        "login": "Login",
+        "register": "Register",
+
+
+        "login": "Login",
+        "register": "Register",
+        "welcome_back": "Welcome back! Redirecting to home...",
+        "thank_you_for_registering": "Thank you for registering! Redirecting to home...",
+        "redirecting_home": "Please wait..."
+      
     
     
   
