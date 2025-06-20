@@ -214,7 +214,29 @@
             "ams_group": "مجموعة AMS",
             "all_rights_reserved": "جميع الحقوق محفوظة",
             "login": "تسجيل الدخول",
-            "register": "إنشاء حساب"
+            "register": "إنشاء حساب",
+            "login": "تسجيل الدخول",
+            "register": "إنشاء حساب",
+            "welcome_back": "مرحبًا بعودتك! جاري تحويلك للصفحة الرئيسية...",
+            "thank_you_for_registering": "شكرًا لتسجيلك! جاري تحويلك للصفحة الرئيسية...",
+            "redirecting_home": "يرجى الانتظار...",
+            
+              "email": "البريد الإلكتروني",
+              "password": "كلمة المرور",
+              "login": "تسجيل الدخول",
+              "logging_in": "جاري تسجيل الدخول...",
+              "login_failed": "فشل تسجيل الدخول",
+              "error_occurred_try_again": "حدث خطأ، حاول مرة أخرى",
+              "full_name": "الاسم الكامل",
+              "email": "البريد الإلكتروني",
+              "password": "كلمة المرور",
+              "register": "تسجيل",
+              "registering": "جاري التسجيل...",
+              "register_success_message": "✅ تم التسجيل بنجاح، يمكنك تسجيل الدخول الآن.",
+              "register_failed": "❌ فشل في التسجيل",
+              "error_occurred_try_again": "❌ حدث خطأ، حاول مرة أخرى"
+            
+            
           
           
       
