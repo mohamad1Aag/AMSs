@@ -1,7 +1,7 @@
 import React, { useContext, useState } from 'react';
 import LoginForm from './LoginForm';
 import RegisterForm from './RegisterForm';
-import Header from './Header';
+import Header from '../Header';
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from '../../ThemeContext';
 
