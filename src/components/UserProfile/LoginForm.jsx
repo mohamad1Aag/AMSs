@@ -1,6 +1,6 @@
 import React, { useState, useContext } from "react";
 import { useTranslation } from "react-i18next";
-import { ThemeContext } from "../ThemeContext";
+import { ThemeContext } from "../../ThemeContext";
 
 export default function LoginForm({ onLoginSuccess }) {
   const { t } = useTranslation();
