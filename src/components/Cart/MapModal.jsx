@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import {
   MapContainer,
   TileLayer,
@@ -7,6 +7,8 @@ import {
 } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
+import { useTranslation } from 'react-i18next';
+import { ThemeContext } from '../../ThemeContext'; // تأكد من المسار الصحيح
 
 // إعداد أيقونة Leaflet
 delete L.Icon.Default.prototype._getIconUrl;
@@ -33,12 +35,14 @@ function MapModal({ isOpen, onClose, onConfirmLocation }) {
   const [selectedPosition, setSelectedPosition] = useState(null);
   const latLatakia = [35.537, 35.776];
   const zoomLevel = 12;
+  const { t } = useTranslation();
+  const { darkMode } = useContext(ThemeContext);
 
   const handleConfirm = () => {
     if (selectedPosition) {
       onConfirmLocation(selectedPosition);
     } else {
-      alert('يرجى اختيار موقع على الخريطة.');
+      alert(t('map.select_location_alert'));
     }
   };
 
@@ -49,7 +53,7 @@ function MapModal({ isOpen, onClose, onConfirmLocation }) {
 
   const handleUseCurrentLocation = () => {
     if (!navigator.geolocation) {
-      alert('المتصفح لا يدعم تحديد الموقع الجغرافي.');
+      alert(t('map.geolocation_not_supported'));
       return;
     }
     navigator.geolocation.getCurrentPosition(
@@ -57,7 +61,7 @@ function MapModal({ isOpen, onClose, onConfirmLocation }) {
         const { latitude, longitude } = pos.coords;
         setSelectedPosition({ lat: latitude, lng: longitude });
       },
-      () => alert('تعذر الحصول على الموقع الحالي.'),
+      () => alert(t('map.geolocation_error')),
       { enableHighAccuracy: true }
     );
   };
@@ -66,18 +70,24 @@ function MapModal({ isOpen, onClose, onConfirmLocation }) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70 p-4">
-      <div className="bg-white rounded-xl shadow-xl w-full max-w-3xl p-6 space-y-6 relative">
+      <div
+        className={`rounded-xl shadow-xl w-full max-w-3xl p-6 space-y-6 relative ${
+          darkMode ? 'bg-gray-900 text-white' : 'bg-white text-black'
+        }`}
+      >
         {/* زر الإغلاق */}
         <button
           onClick={handleCancel}
-          className="absolute top-4 left-4 text-gray-500 hover:text-red-600 text-2xl font-bold"
-          aria-label="إغلاق"
+          className={`absolute top-4 left-4 text-2xl font-bold ${
+            darkMode ? 'text-white hover:text-red-400' : 'text-gray-500 hover:text-red-600'
+          }`}
+          aria-label={t('map.close')}
         >
           ×
         </button>
 
-        <h3 className="text-2xl font-bold text-purple-800 text-center">
-          حدد موقع التوصيل (ضمن نطاق اللاذقية)
+        <h3 className="text-2xl font-bold text-center text-purple-500">
+          {t('map.title')}
         </h3>
 
         <MapContainer
@@ -112,14 +122,14 @@ function MapModal({ isOpen, onClose, onConfirmLocation }) {
             onClick={handleUseCurrentLocation}
             className="bg-yellow-400 text-purple-900 px-5 py-3 rounded-lg font-semibold hover:bg-yellow-300 transition shadow"
           >
-            📍 تحديد موقعي الحالي
+            📍 {t('map.use_current_location')}
           </button>
 
           <button
             onClick={handleConfirm}
             className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg shadow transition font-semibold"
           >
-            ✅ تأكيد الموقع
+            ✅ {t('map.confirm')}
           </button>
         </div>
       </div>
