@@ -49,11 +49,30 @@ const AddProduct = () => {
       return;
     }
 
+    // قراءة التوكن من localStorage
+    const token = localStorage.getItem('token');
+    if (!token) {
+      setMessage('❌ يجب تسجيل الدخول كأدمن');
+      return;
+    }
+
+    // فك تشفير التوكن لاستخراج adminId
+    let adminId = null;
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      adminId = payload.id; // تأكد من اسم الحقل في البايلود
+    } catch (error) {
+      setMessage('❌ التوكن غير صالح');
+      return;
+    }
+
+    // إنشاء FormData وإضافة adminId
     const formData = new FormData();
     formData.append('section', sectionId);
     formData.append('name', name);
     formData.append('price', price);
     formData.append('image', image);
+    formData.append('adminId', adminId); // هنا أضفنا adminId
 
     try {
       const res = await axios.post(
