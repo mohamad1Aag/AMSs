@@ -34,6 +34,38 @@
   "cancel": "Cancel",
   "no_products_in_section": "No products in this section.",
   "loading_section_details": "Loading section details...",
-  "added_to_cart": "has been added to the cart"
+  "added_to_cart": "has been added to the cart",
+  
+    "contact_us": "📞 Contact Us",
+    "contact_intro": "We at",
+    "contact_end": "are happy to serve you and respond to your inquiries at any time.",
+    "contact_info": "Contact Information",
+    "address": "Address",
+    "contact_address": "8th March Street, opposite Military Hospital",
+    "phone": "Phone",
+    "email": "Email",
+    "working_hours": "Working Hours",
+    "contact_hours": "Sunday - Thursday (9am - 5pm)",
+    "send_message": "Send Us a Message",
+    "full_name": "Full Name",
+    "your_message": "Write your message here...",
+    "send": "Send",
+    
+      "about_title": "About Us - AMS General Trading",
+      "about_us": "Who We Are",
+      "about_us_text": "AMS Group strives to be number one in general trading.",
+      "our_vision": "Our Vision",
+      "our_vision_text": "To be the first choice in the trade world by providing high-quality services that exceed our clients' expectations.",
+      "our_services": "Our Services",
+      "delivery": "Delivery",
+      "vegetables": "Vegetables",
+      "fruits": "Fruits",
+      "clothing_stationery": "Clothing & Stationery",
+      "ams_group": "AMS Group",
+      "all_rights_reserved": "All rights reserved"
+    
+    
+  
+  
   }
   
