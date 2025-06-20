@@ -71,7 +71,7 @@ function Cart() {
         userId,
         products: cart.map((item) => ({
           productId: item._id || item.productId || item.id,
-          vendorId: item.vendorId,
+          vendorId: item.adminId,
           name: item.name,
           price: item.price,
           quantity: item.quantity,
