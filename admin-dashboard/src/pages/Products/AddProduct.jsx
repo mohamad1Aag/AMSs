@@ -43,44 +43,46 @@ const AddProduct = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     if (!sectionId) {
       setMessage('❌ يرجى اختيار قسم');
       return;
     }
-
-    // قراءة التوكن من localStorage
+  
     const token = localStorage.getItem('token');
     if (!token) {
       setMessage('❌ يجب تسجيل الدخول كأدمن');
       return;
     }
-
-    // فك تشفير التوكن لاستخراج adminId
+  
     let adminId = null;
     try {
       const payload = JSON.parse(atob(token.split('.')[1]));
-      adminId = payload.id; // تأكد من اسم الحقل في البايلود
+      adminId = payload.id;
     } catch (error) {
       setMessage('❌ التوكن غير صالح');
       return;
     }
-
-    // إنشاء FormData وإضافة adminId
+  
     const formData = new FormData();
     formData.append('section', sectionId);
     formData.append('name', name);
     formData.append('price', price);
     formData.append('image', image);
-    formData.append('adminId', adminId); // هنا أضفنا adminId
-
+    formData.append('adminId', adminId);
+  
+    // طباعة محتويات formData
+    for (let pair of formData.entries()) {
+      console.log(`${pair[0]}:`, pair[1]);
+    }
+  
     try {
       const res = await axios.post(
         'https://my-backend-dgp2.onrender.com/api/products',
         formData,
         { headers: { 'Content-Type': 'multipart/form-data' } }
       );
-
+  
       setMessage(`✅ تم إضافة المنتج: ${res.data.name}`);
       setName('');
       setPrice('');
@@ -92,7 +94,7 @@ const AddProduct = () => {
       setMessage(`❌ خطأ: ${err.response?.data?.error || 'حدث خطأ'}`);
     }
   };
-
+  
   return (
     <div className="p-6 bg-gradient-to-r from-purple-800 via-pink-600 to-yellow-100 min-h-screen">
       {/* نموذج إضافة منتج */}
