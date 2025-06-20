@@ -1,81 +1,96 @@
-import { useState } from 'react';
-import styles from './LoginForm.module.css';
+import React, { useState, useContext } from "react";
+import { useTranslation } from "react-i18next";
+import { ThemeContext } from "../../ThemeContext";
 
-export default function LoginForm({ onLogin }) {
-  const [credentials, setCredentials] = useState({ username: '', password: '' });
-  const [error, setError] = useState('');
+export default function LoginForm({ onLoginSuccess }) {
+  const { t } = useTranslation();
+  const { darkMode } = useContext(ThemeContext);
 
-  const handleChange = e => {
-    const { name, value } = e.target;
-    setCredentials(prev => ({ ...prev, [name]: value }));
-  };
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
-//   const handleSubmit = async e => {
-//     e.preventDefault();
-//     setError('');
-//     try {
-//       // مثال على استدعاء واجهة برمجيّة
-//       const res = await fetch('/login', {
-//         method: 'POST',
-//         headers: { 'Content-Type': 'application/json' },
-//         body: JSON.stringify(credentials)
-//       });
-//       if (!res.ok) throw new Error('فشل تسجيل الدخول');
-//       const user = await res.json();
-//       onLogin(user);
-//     } catch (err) {
-//       setError(err.message);
-//     }
-//   };
-const handleSubmit = e => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
-  
-    const { username, password } = credentials;
-  
-    // تجربة محلية: نعتبر أن الاعتماديات الصحيحة هما 's' و 's'
-    if (username === 's' && password === 's') {
-      // محاكاة استقبال بيانات المستخدم
-      onLogin({ username });
-    } else {
-      setError('اسم المستخدم أو كلمة المرور غير صحيحة');
+    setLoading(true);
+
+    try {
+      const res = await fetch("https://my-backend-dgp2.onrender.com/api/users/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        localStorage.setItem("userToken", data.token);
+        onLoginSuccess();
+      } else {
+        alert(data.message || t("login_failed"));
+      }
+    } catch (error) {
+      alert(t("error_occurred_try_again"));
+    } finally {
+      setLoading(false);
     }
   };
-  
 
   return (
-    <div className={styles.container}>
-      <form onSubmit={handleSubmit} className={styles.form}>
-        <h2 className={styles.title}>تسجيل الدخول</h2>
+    <form onSubmit={handleSubmit} className="space-y-6">
+      <div className="flex flex-col">
+        <label
+          className={`mb-2 font-semibold ${
+            darkMode ? "text-yellow-400" : "text-purple-800"
+          }`}
+        >
+          {t("email")}
+        </label>
+        <input
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+          className={`px-4 py-3 border rounded-md focus:outline-none focus:ring-2 ${
+            darkMode
+              ? "border-yellow-400 focus:ring-yellow-300 bg-gray-800 text-white"
+              : "border-purple-300 focus:ring-purple-500 bg-white text-black"
+          }`}
+        />
+      </div>
 
-        {error && <p className={styles.error}>{error}</p>}
+      <div className="flex flex-col">
+        <label
+          className={`mb-2 font-semibold ${
+            darkMode ? "text-yellow-400" : "text-purple-800"
+          }`}
+        >
+          {t("password")}
+        </label>
+        <input
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+          className={`px-4 py-3 border rounded-md focus:outline-none focus:ring-2 ${
+            darkMode
+              ? "border-yellow-400 focus:ring-yellow-300 bg-gray-800 text-white"
+              : "border-purple-300 focus:ring-purple-500 bg-white text-black"
+          }`}
+        />
+      </div>
 
-        <div className={styles.group}>
-          <label htmlFor="username">اسم المستخدم</label>
-          <input
-            type="text"
-            id="username"
-            name="username"
-            value={credentials.username}
-            onChange={handleChange}
-            required
-          />
-        </div>
-
-        <div className={styles.group}>
-          <label htmlFor="password">كلمة المرور</label>
-          <input
-            type="password"
-            id="password"
-            name="password"
-            value={credentials.password}
-            onChange={handleChange}
-            required
-          />
-        </div>
-
-        <button type="submit" className={styles.button}>دخول</button>
-      </form>
-    </div>
+      <button
+        type="submit"
+        disabled={loading}
+        className={`w-full py-3 rounded-md font-semibold transition ${
+          darkMode
+            ? "bg-yellow-400 hover:bg-yellow-300 text-purple-900"
+            : "bg-purple-700 hover:bg-purple-800 text-white"
+        }`}
+      >
+        {loading ? t("logging_in") : t("login")}
+      </button>
+    </form>
   );
 }
