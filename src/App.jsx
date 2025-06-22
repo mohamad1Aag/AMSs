@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
-import { ThemeContext } from "./ThemeContext"; // عدل المسار حسب مشروعك
+import { ThemeContext } from "./ThemeContext";
 
 import Home from "./components/Home";
 import Services from "./components/Services";
@@ -27,6 +27,9 @@ import Login from "../admin-dashboard/src/components/Login";
 
 import SectionDetails from "./components/SectionDetails";
 import CaptainDashboard from "../captian/CaptainDashboard";
+import CaptainLogin from "../captian/CaptainLogin";
+import CaptainRegister from "../captian/CaptainRegister";  // <<-- أضفت هنا
+import MyOrders from "./components/UserProfile/MyOrders";
 
 import "leaflet/dist/leaflet.css";
 import "leaflet-routing-machine/dist/leaflet-routing-machine.css";
@@ -34,20 +37,17 @@ import "leaflet-routing-machine/dist/leaflet-routing-machine.css";
 import "./i18n";
 
 function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [userAuthenticated, setUserAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false); // أدمن
+  const [userAuthenticated, setUserAuthenticated] = useState(false); // مستخدم عادي
+  const [captainAuthenticated, setCaptainAuthenticated] = useState(false); // كابتن
 
   const { i18n } = useTranslation();
-
-  // هنا استدعاء الثيم من السياق
   const { darkMode, toggleTheme } = useContext(ThemeContext);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    setIsAuthenticated(!!token);
-
-    const userToken = localStorage.getItem("userToken");
-    setUserAuthenticated(!!userToken);
+    setIsAuthenticated(!!localStorage.getItem("token"));
+    setUserAuthenticated(!!localStorage.getItem("userToken"));
+    setCaptainAuthenticated(!!localStorage.getItem("captainToken"));
   }, []);
 
   const handleLogin = () => setIsAuthenticated(true);
@@ -55,9 +55,15 @@ function App() {
     localStorage.removeItem("token");
     setIsAuthenticated(false);
   };
+
   const handleUserLogout = () => {
     localStorage.removeItem("userToken");
     setUserAuthenticated(false);
+  };
+
+  const handleCaptainLogout = () => {
+    localStorage.removeItem("captainToken");
+    setCaptainAuthenticated(false);
   };
 
   const toggleLanguage = () => {
@@ -65,28 +71,17 @@ function App() {
     i18n.changeLanguage(newLang);
   };
 
+  // حماية راوت الكابتن
+  const CaptainProtectedRoute = ({ children }) => {
+    if (!captainAuthenticated) {
+      return <Navigate to="/captain/login" replace />;
+    }
+    return children;
+  };
+
   return (
     <>
-      {/* شريط تبديل اللغة والثيم */}
-      {/* <div className="flex justify-end gap-4 p-4 bg-gray-100">
-        <button
-          onClick={toggleLanguage}
-          className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded shadow-md transition duration-300"
-          title="تبديل اللغة"
-        >
-          {i18n.language === "en" ? "العربية" : "English"}
-        </button>
-
-        <button
-          onClick={toggleTheme}
-          className="bg-gray-800 hover:bg-gray-900 text-white font-semibold py-2 px-4 rounded shadow-md transition duration-300"
-          title="تبديل الثيم"
-        >
-          {darkMode ? "☀️ فاتح" : "🌙 داكن"}
-        </button>
-      </div> */}
-
-      {/* أزرار تسجيل الخروج */}
+      {/* تسجيل الخروج للأدمن */}
       {isAuthenticated && (
         <div className="p-4 text-center">
           <button
@@ -99,6 +94,7 @@ function App() {
         </div>
       )}
 
+      {/* تسجيل الخروج للمستخدم */}
       {userAuthenticated && !isAuthenticated && (
         <div className="p-4 text-center">
           <button
@@ -107,6 +103,19 @@ function App() {
             title="تسجيل خروج المستخدم"
           >
             🔓 تسجيل خروج المستخدم
+          </button>
+        </div>
+      )}
+
+      {/* تسجيل الخروج للكابتن */}
+      {captainAuthenticated && (
+        <div className="p-4 text-center">
+          <button
+            onClick={handleCaptainLogout}
+            className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded transition-colors duration-300"
+            title="تسجيل خروج الكابتن"
+          >
+            🔓 تسجيل خروج الكابتن
           </button>
         </div>
       )}
@@ -126,6 +135,11 @@ function App() {
 
           {/* تسجيل دخول الأدمن */}
           <Route path="/login" element={<Login onLogin={handleLogin} />} />
+
+          {/* تسجيل دخول الكابتن */}
+          <Route path="/captain/login" element={<CaptainLogin />} />
+          {/* تسجيل كابتن جديد */}
+          <Route path="/captain/register" element={<CaptainRegister />} />
 
           {/* صفحات الأدمن محمية */}
           <Route
@@ -176,8 +190,18 @@ function App() {
           {/* صفحة تفاصيل القسم */}
           <Route path="/section/:id" element={<SectionDetails />} />
 
-          {/* لوحة تحكم الكابتن */}
-          <Route path="/CaptainDashboard" element={<CaptainDashboard />} />
+          {/* لوحة تحكم الكابتن محمية */}
+          <Route
+            path="/CaptainDashboard"
+            element={
+              <CaptainProtectedRoute>
+                <CaptainDashboard />
+              </CaptainProtectedRoute>
+            }
+          />
+
+          {/* صفحة طلبات المستخدم */}
+          <Route path="/my-orders" element={<MyOrders />} />
         </Routes>
       </BrowserRouter>
     </>

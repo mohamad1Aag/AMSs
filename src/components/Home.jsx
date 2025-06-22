@@ -133,7 +133,12 @@ function Home() {
             {t("go_to_services")}
           </button>
         </Link>
+        <Link to="/my-orders" className="text-blue-600 underline hover:text-blue-800">
+  مشاهدة طلباتي               
+            </Link>
+
       </div>
+
     </div>
   );
 }

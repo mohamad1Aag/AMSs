@@ -72,7 +72,25 @@
         "register": "Register",
         "welcome_back": "Welcome back! Redirecting to home...",
         "thank_you_for_registering": "Thank you for registering! Redirecting to home...",
-        "redirecting_home": "Please wait..."
+        "redirecting_home": "Please wait...",
+        
+
+  "my_orders": "🧾 My Orders",
+  "toggle_language": "Toggle Language",
+  "toggle_dark_mode": "Toggle Dark Mode",
+  "light_mode": "Light Mode",
+  "dark_mode": "Dark Mode",
+  "user_not_known": "User not known. Please login.",
+  "fetch_orders_error": "Error fetching orders.",
+  "loading_orders": "Loading orders...",
+  "no_orders_yet": "No orders yet.",
+  "order_number": "Order Number",
+  "total": "Total",
+  "date": "Date",
+  "product_count": "Number of products",
+  "show_products_details": "Show products details"
+
+
       
     
     
