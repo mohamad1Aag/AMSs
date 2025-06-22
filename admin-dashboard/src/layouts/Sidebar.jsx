@@ -72,6 +72,16 @@ function Sidebar({ isOpen, onClose }) {
                 التقارير
               </Link>
             </li>
+            {/* إضافة رابط جديد لصفحة التقييمات */}
+            <li>
+              <Link
+                to="/Feedback"
+                className="block px-3 py-2 rounded hover:bg-white hover:text-purple-800 transition"
+                onClick={onClose}
+              >
+                التقييمات
+              </Link>
+            </li>
             <li>
               <Link
                 to="/Settings"

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-const CaptainLogin = () => {
+const CaptainLogin = ({ onCaptainLogin }) => {
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
@@ -19,16 +19,14 @@ const CaptainLogin = () => {
       });
 
       if (res.data.token) {
-        // حفظ التوكن
         localStorage.setItem("captainToken", res.data.token);
-        // تحويل للكابتن داشبورد
+        onCaptainLogin(); // ✅ نحدث الحالة فوراً بدون reload
         navigate("/CaptainDashboard");
-        // تحديث حالة الدخول في App.js يتم تلقائياً عند تغير localStorage بسبب useEffect
       } else {
         setErrorMsg("فشل في تسجيل الدخول. حاول مرة أخرى.");
       }
     } catch (error) {
-      if (error.response && error.response.data && error.response.data.message) {
+      if (error.response?.data?.message) {
         setErrorMsg(error.response.data.message);
       } else {
         setErrorMsg("حدث خطأ أثناء تسجيل الدخول.");

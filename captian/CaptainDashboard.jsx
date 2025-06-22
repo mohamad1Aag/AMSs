@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import CaptainMap from "./CaptainMap";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link, Outlet } from "react-router-dom";
 
 function parseJwt(token) {
   try {
@@ -37,10 +37,11 @@ const CaptainDashboard = () => {
 
       try {
         setLoading(true);
+        // جلب الطلبات من السيرفر مع الفلترة (هنا تأكد أن API يرجع فقط طلبات الكابتن نفسه)
         const res = await axios.get("https://my-backend-dgp2.onrender.com/api/all/orders", {
           headers: { Authorization: `Bearer ${token}` },
         });
-        setOrders(res.data);
+        setOrders(res.data.filter(order => order.status === "completed" && order.captainName === payload.name));
       } catch (err) {
         setError("فشل تحميل الطلبات");
       } finally {
@@ -71,24 +72,60 @@ const CaptainDashboard = () => {
     );
 
   return (
-    <div className="max-w-6xl mx-auto p-6 bg-white rounded-lg shadow-lg mt-10">
-      <header className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold text-purple-800">لوحة تحكم الكابتن</h1>
+    <div className="flex min-h-screen bg-gray-100">
+      {/* Sidebar */}
+      <aside className="w-64 bg-white shadow-md p-6 flex flex-col">
+        <h2 className="text-2xl font-bold mb-8 text-purple-800">لوحة الكابتن</h2>
+
+        <nav className="flex flex-col gap-4">
+          <Link
+            to="/captain/dashboard/orders"
+            className="text-purple-700 hover:text-purple-900 font-semibold"
+          >
+            الطلبات الخاصة بي
+          </Link>
+          {/* يمكن تضيف روابط أخرى هنا */}
+        </nav>
+
         <button
           onClick={handleLogout}
-          className="bg-red-600 hover:bg-red-700 text-white font-semibold px-5 py-2 rounded transition"
+          className="mt-auto bg-red-600 hover:bg-red-700 text-white font-semibold px-4 py-2 rounded transition"
         >
           تسجيل خروج
         </button>
-      </header>
+      </aside>
 
-      <section className="mb-4">
-        <p className="text-gray-700 text-lg">
-          مرحباً <span className="font-semibold text-purple-700">{captainName}</span>، هذه الطلبات الخاصة بك.
-        </p>
-      </section>
+      {/* Main Content */}
+      <main className="flex-grow p-6">
+        <h1 className="text-3xl font-bold mb-6 text-purple-800">
+          مرحباً <span className="text-purple-700">{captainName}</span>
+        </h1>
 
-      <CaptainMap captainName={captainName} orders={orders} />
+        {/* هنا نعرض الطلبات في قائمة */}
+        <section>
+          <h2 className="text-xl font-semibold mb-4">الطلبات المكتملة الخاصة بك</h2>
+
+          {orders.length === 0 ? (
+            <p>لا توجد طلبات مكتملة.</p>
+          ) : (
+            <ul className="space-y-3">
+              {orders.map((order) => (
+                <li key={order.id} className="p-4 bg-white rounded shadow">
+                  <p><strong>رقم الطلب:</strong> {order.id}</p>
+                  <p><strong>اسم العميل:</strong> {order.customerName}</p>
+                  <p><strong>العنوان:</strong> {order.address}</p>
+                  {/* ممكن تضيف تفاصيل إضافية */}
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+
+        {/* لو تحب تعرض الخريطة أسفل الطلبات */}
+        <section className="mt-8">
+          <CaptainMap captainName={captainName} orders={orders} />
+        </section>
+      </main>
     </div>
   );
 };

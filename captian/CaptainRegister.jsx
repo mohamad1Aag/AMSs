@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 const CaptainRegister = () => {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState(""); // ✅ حقل البريد الإلكتروني
   const [password, setPassword] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
@@ -18,7 +19,7 @@ const CaptainRegister = () => {
     try {
       const res = await axios.post(
         "https://my-backend-dgp2.onrender.com/api/captains/register",
-        { name, phone, password }
+        { name, phone, email, password } // ✅ أرسل البريد الإلكتروني مع البيانات
       );
 
       if (res.status === 201) {
@@ -51,6 +52,7 @@ const CaptainRegister = () => {
           <div className="bg-green-100 text-green-700 p-3 mb-4 rounded">{successMsg}</div>
         )}
 
+        {/* الاسم الكامل */}
         <label htmlFor="name" className="block mb-2 font-semibold">
           الاسم الكامل
         </label>
@@ -64,6 +66,7 @@ const CaptainRegister = () => {
           className="w-full p-2 border border-gray-300 rounded mb-4 focus:outline-none focus:ring-2 focus:ring-purple-500"
         />
 
+        {/* رقم الهاتف */}
         <label htmlFor="phone" className="block mb-2 font-semibold">
           رقم الهاتف
         </label>
@@ -77,6 +80,21 @@ const CaptainRegister = () => {
           className="w-full p-2 border border-gray-300 rounded mb-4 focus:outline-none focus:ring-2 focus:ring-purple-500"
         />
 
+        {/* البريد الإلكتروني */}
+        <label htmlFor="email" className="block mb-2 font-semibold">
+          البريد الإلكتروني
+        </label>
+        <input
+          id="email"
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+          placeholder="أدخل البريد الإلكتروني"
+          className="w-full p-2 border border-gray-300 rounded mb-4 focus:outline-none focus:ring-2 focus:ring-purple-500"
+        />
+
+        {/* كلمة المرور */}
         <label htmlFor="password" className="block mb-2 font-semibold">
           كلمة المرور
         </label>

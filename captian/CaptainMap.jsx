@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import L from 'leaflet';
+import axios from 'axios';
 import 'leaflet-routing-machine';
 import 'leaflet/dist/leaflet.css';
 import 'leaflet-routing-machine/dist/leaflet-routing-machine.css';
@@ -32,6 +33,8 @@ const Routing = ({ from, to }) => {
 const CaptainMap = ({ captainName, orders }) => {
   const [captainLocation, setCaptainLocation] = useState(null);
   const [loadingLocation, setLoadingLocation] = useState(true);
+  const [updatingOrderId, setUpdatingOrderId] = useState(null); // حالة تحديث الطلب
+  const [localOrders, setLocalOrders] = useState([]); // نسخة محلية للطلبات
 
   const getLocation = () => {
     if (!navigator.geolocation) {
@@ -57,14 +60,20 @@ const CaptainMap = ({ captainName, orders }) => {
     );
   };
 
+  // تحديث نسخة localOrders عند تغير props.orders
+  useEffect(() => {
+    setLocalOrders(orders);
+  }, [orders]);
+
   useEffect(() => {
     getLocation();
   }, []);
 
-  if (!orders || !Array.isArray(orders))
+  if (!localOrders || !Array.isArray(localOrders))
     return <p className="text-center mt-10 text-gray-600">جارٍ تحميل الطلبات...</p>;
 
-  const captainOrders = orders.filter(order => order.captainName === captainName);
+  // الآن نفلتر من localOrders وليس orders
+  const captainOrders = localOrders.filter(order => order.captainName === captainName);
 
   if (loadingLocation)
     return <p className="text-center mt-10 text-blue-600 font-semibold">جارٍ الحصول على موقع الكابتن...</p>;
@@ -88,6 +97,28 @@ const CaptainMap = ({ captainName, orders }) => {
         لا توجد طلبات مخصصة للكابتن <span className="text-purple-700">{captainName}</span>
       </p>
     );
+
+  // دالة تحديث حالة الطلب إلى "مكتمل" وتحديث النسخة المحلية
+  const markOrderAsDelivered = async (orderId) => {
+    try {
+      setUpdatingOrderId(orderId);
+      await axios.patch(`https://my-backend-dgp2.onrender.com/api/orders/${orderId}/status`, {
+        status: 'مكتمل'  // أو 'completed' حسب ما تستخدم في الباك
+      });
+      alert('تم تحديث حالة الطلب إلى مكتمل.');
+      // تحديث الطلب محلياً لإخفاء البوب أب:
+      setLocalOrders(prevOrders =>
+        prevOrders.map(order =>
+          order._id === orderId ? { ...order, status: 'مكتمل' } : order
+        )
+      );
+    } catch (error) {
+      console.error('خطأ في تحديث حالة الطلب:', error);
+      alert('حدث خطأ أثناء تحديث حالة الطلب.');
+    } finally {
+      setUpdatingOrderId(null);
+    }
+  };
 
   return (
     <div className="max-w-7xl mx-auto p-4">
@@ -122,7 +153,7 @@ const CaptainMap = ({ captainName, orders }) => {
         </Marker>
 
         {captainOrders.map(order =>
-          order.deliveryLocation?.lat && order.deliveryLocation?.lng ? (
+          order.deliveryLocation?.lat && order.deliveryLocation?.lng && order.status !== 'مكتمل' ? (
             <Marker
               key={order._id}
               position={[order.deliveryLocation.lat, order.deliveryLocation.lng]}
@@ -134,10 +165,18 @@ const CaptainMap = ({ captainName, orders }) => {
               })}
             >
               <Popup>
-                <div className="space-y-1">
+                <div className="space-y-2">
                   <p><strong>رقم الطلب:</strong> {order._id}</p>
                   <p><strong>الحالة:</strong> <span className="capitalize">{order.status}</span></p>
                   <p><strong>ملاحظات:</strong> {order.notes || '-'}</p>
+                  
+                  <button
+                    onClick={() => markOrderAsDelivered(order._id)}
+                    disabled={updatingOrderId === order._id}
+                    className="mt-2 w-full px-3 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition disabled:opacity-50"
+                  >
+                    {updatingOrderId === order._id ? 'جاري التحديث...' : 'تأكيد التسليم'}
+                  </button>
                 </div>
               </Popup>
             </Marker>
@@ -145,7 +184,7 @@ const CaptainMap = ({ captainName, orders }) => {
         )}
 
         {captainOrders.map(order =>
-          order.deliveryLocation?.lat && order.deliveryLocation?.lng ? (
+          order.deliveryLocation?.lat && order.deliveryLocation?.lng && order.status !== 'مكتمل' ? (
             <Routing key={`route-${order._id}`} from={captainLocation} to={order.deliveryLocation} />
           ) : null
         )}
