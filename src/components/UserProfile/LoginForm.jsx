@@ -1,6 +1,7 @@
 import React, { useState, useContext } from "react";
 import { useTranslation } from "react-i18next";
 import { ThemeContext } from "../../ThemeContext";
+import { Link } from "react-router-dom";
 
 export default function LoginForm({ onLoginSuccess }) {
   const { t } = useTranslation();
@@ -39,11 +40,7 @@ export default function LoginForm({ onLoginSuccess }) {
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div className="flex flex-col">
-        <label
-          className={`mb-2 font-semibold ${
-            darkMode ? "text-yellow-400" : "text-purple-800"
-          }`}
-        >
+        <label className={`mb-2 font-semibold ${darkMode ? "text-yellow-400" : "text-purple-800"}`}>
           {t("email")}
         </label>
         <input
@@ -60,11 +57,7 @@ export default function LoginForm({ onLoginSuccess }) {
       </div>
 
       <div className="flex flex-col">
-        <label
-          className={`mb-2 font-semibold ${
-            darkMode ? "text-yellow-400" : "text-purple-800"
-          }`}
-        >
+        <label className={`mb-2 font-semibold ${darkMode ? "text-yellow-400" : "text-purple-800"}`}>
           {t("password")}
         </label>
         <input
@@ -78,6 +71,17 @@ export default function LoginForm({ onLoginSuccess }) {
               : "border-purple-300 focus:ring-purple-500 bg-white text-black"
           }`}
         />
+        {/* ✅ رابط نسيت كلمة المرور */}
+        <div className="text-right mt-2">
+          <Link
+            to="/forgot-password"
+            className={`text-sm ${
+              darkMode ? "text-yellow-300 hover:text-yellow-400" : "text-purple-700 hover:text-purple-900"
+            }`}
+          >
+            {t("forgot_password") || "هل نسيت كلمة المرور؟"}
+          </Link>
+        </div>
       </div>
 
       <button

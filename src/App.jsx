@@ -32,7 +32,8 @@ import CaptainRegister from "../captian/CaptainRegister";
 import CaptainOrders from "../captian/CaptainOrders";
 import MyOrders from "./components/UserProfile/MyOrders";
 import Feedback from "../admin-dashboard/src/components/AdminFeedbackTable"; // عدل المسار حسب مكان الملف
-
+import ForgotPassword from '../src/components/UserProfile/ForgotPassword';
+import ResetPassword from '../src/components/UserProfile/ResetPassword';
 import "leaflet/dist/leaflet.css";
 import "leaflet-routing-machine/dist/leaflet-routing-machine.css";
 
@@ -266,7 +267,8 @@ function App() {
             }
           />
 
-        
+<Route path="/forgot-password" element={<ForgotPassword />} />
+<Route path="/reset-password/:token" element={<ResetPassword />} />
         </Routes>
         
       </BrowserRouter>

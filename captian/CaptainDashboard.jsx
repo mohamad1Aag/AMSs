@@ -41,8 +41,11 @@ const CaptainDashboard = () => {
         const res = await axios.get("https://my-backend-dgp2.onrender.com/api/all/orders", {
           headers: { Authorization: `Bearer ${token}` },
         });
-        setOrders(res.data.filter(order => order.status === "completed" && order.captainName === payload.name));
-      } catch (err) {
+        setOrders(
+          res.data.filter(order =>
+            order.captainName?.toLowerCase() === payload.name.toLowerCase()
+          )
+        )} catch (err) {
         setError("فشل تحميل الطلبات");
       } finally {
         setLoading(false);
