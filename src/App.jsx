@@ -31,7 +31,7 @@ import CaptainLogin from "../captian/CaptainLogin";
 import CaptainRegister from "../captian/CaptainRegister";
 import CaptainOrders from "../captian/CaptainOrders";
 import MyOrders from "./components/UserProfile/MyOrders";
-import Feedback from "../../AMS/admin-dashboard/src/components/AdminFeedbackTable"; // عدل المسار حسب مكان الملف
+import Feedback from "../admin-dashboard/src/components/AdminFeedbackTable"; // عدل المسار حسب مكان الملف
 
 import "leaflet/dist/leaflet.css";
 import "leaflet-routing-machine/dist/leaflet-routing-machine.css";
