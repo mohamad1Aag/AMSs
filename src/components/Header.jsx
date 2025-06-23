@@ -13,7 +13,7 @@ function Header() {
   const toggleNav = () => setNavVisible(!navVisible);
   const changeLanguage = (lang) => i18n.changeLanguage(lang);
 
-  // روابط عامة
+  // روابط عامة (أضفت رابط سجل النقاط هنا)
   const generalLinks = [
     { path: "/", label: "home" },
     { path: "/AdminDash", label: "admin_dashboard" },
@@ -23,6 +23,7 @@ function Header() {
     { path: "/UserProfile", label: "user_profile" },
     { path: "/ProductList", label: "cart" },
     { path: "/UserEditProfile", label: "edit_profile" },
+    { path: "/PointHistory", label: "point_history" }, // سجل النقاط
   ];
 
   // روابط خاصة بالكابتن داخل Dropdown
@@ -45,12 +46,13 @@ function Header() {
   }, []);
 
   return (
-    <header className={`
-      ${darkMode
-        ? "bg-gray-900 text-white"
-        : "bg-gradient-to-r from-purple-800 via-pink-600 to-yellow-100 text-white"}
-      shadow-md sticky top-0 z-50 transition-colors duration-500
-    `}>
+    <header
+      className={`${
+        darkMode
+          ? "bg-gray-900 text-white"
+          : "bg-gradient-to-r from-purple-800 via-pink-600 to-yellow-100 text-white"
+      } shadow-md sticky top-0 z-50 transition-colors duration-500`}
+    >
       <div className="max-w-7xl mx-auto flex items-center justify-between px-4 py-4 md:py-6">
 
         {/* الشعار + روابط التنقل */}
@@ -63,7 +65,6 @@ function Header() {
 
           {/* روابط التنقل (تظهر في md وأكبر) */}
           <nav className="hidden md:flex gap-6 flex-1 items-center">
-
             {generalLinks.map(({ path, label }) => (
               <Link
                 key={path}
@@ -83,19 +84,27 @@ function Header() {
               >
                 {t("captain")}
                 <svg
-                  className={`w-4 h-4 transition-transform duration-200 ${captainDropdownOpen ? "rotate-180" : "rotate-0"}`}
-                  fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"
+                  className={`w-4 h-4 transition-transform duration-200 ${
+                    captainDropdownOpen ? "rotate-180" : "rotate-0"
+                  }`}
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  viewBox="0 0 24 24"
                   xmlns="http://www.w3.org/2000/svg"
                 >
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7"></path>
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M19 9l-7 7-7-7"
+                  ></path>
                 </svg>
               </button>
 
               {captainDropdownOpen && (
-                <div className={`
-                  absolute top-full mt-2 right-0 bg-white dark:bg-gray-800 rounded shadow-lg py-2 w-48
-                  text-gray-900 dark:text-white
-                `}>
+                <div
+                  className={`absolute top-full mt-2 right-0 bg-white dark:bg-gray-800 rounded shadow-lg py-2 w-48 text-gray-900 dark:text-white`}
+                >
                   {captainLinks.map(({ path, label }) => (
                     <Link
                       key={path}
@@ -141,7 +150,13 @@ function Header() {
           className="md:hidden focus:outline-none"
           aria-label="Toggle navigation menu"
         >
-          <svg width="30" height="30" viewBox="0 0 100 80" fill="#00b4db" xmlns="http://www.w3.org/2000/svg">
+          <svg
+            width="30"
+            height="30"
+            viewBox="0 0 100 80"
+            fill="#00b4db"
+            xmlns="http://www.w3.org/2000/svg"
+          >
             <rect width="100" height="15" rx="3"></rect>
             <rect y="30" width="100" height="15" rx="3"></rect>
             <rect y="60" width="100" height="15" rx="3"></rect>

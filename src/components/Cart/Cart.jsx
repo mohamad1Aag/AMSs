@@ -61,46 +61,46 @@ function Cart() {
     }
 
     const userId = payload.id;
+    const totalPrice = calculateTotal();
 
     try {
-      const orderData = {
-        userId,
-        products: cart.map((item) => ({
-          productId: item._id || item.productId || item.id,
-          vendorId: item.adminId,
-          name: item.name,
-          price: item.price,
-          quantity: item.quantity,
-          type: item.type,
-        })),
-        deliveryLocation,
-        notes: t('new_order_note'),
-        total: calculateTotal(),
-      };
+      // جلب بيانات المستخدم للتحقق من النقاط
+      const userRes = await fetch(`https://my-backend-dgp2.onrender.com/api/users/${userId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
-      const response = await fetch(
-        'https://my-backend-dgp2.onrender.com/api/orders',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify(orderData),
-        }
-      );
+      const userData = await userRes.json();
+      if (!userRes.ok) throw new Error('فشل في تحميل بيانات المستخدم');
 
-      const result = await response.json();
-      if (response.ok) {
-        alert(t('order_success'));
-        setCart([]);
-        setDeliveryLocation(null);
-        localStorage.removeItem('cart');
-        localStorage.removeItem('deliveryLocation');
-        navigate('/');
-      } else {
-        alert(`${t('order_error')}: ${result.message || t('unknown_error')}`);
+      const userPoints = userData.point || 0;
+
+      if (userPoints < totalPrice) {
+        alert(`رصيدك غير كافٍ (${userPoints}) لإتمام الطلب (${totalPrice}). سيتم تحويلك إلى صفحة الشحن.`);
+        navigate('/wallet');
+        return;
       }
+
+      // فقط خصم النقاط (بدون إنشاء طلب جديد)
+      const patchRes = await fetch(`https://my-backend-dgp2.onrender.com/api/users/pointcart/${userId}/points`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ point: userPoints - totalPrice }),
+      });
+
+      if (!patchRes.ok) {
+        const errData = await patchRes.json();
+        throw new Error(errData.message || 'خطأ في خصم النقاط');
+      }
+
+      alert(t('points_deducted_success')); // مثلاً "تم خصم النقاط بنجاح"
+      setCart([]);
+      setDeliveryLocation(null);
+      localStorage.removeItem('cart');
+      localStorage.removeItem('deliveryLocation');
+      navigate('/');
     } catch (error) {
       alert(t('server_error'));
       console.error(error);
@@ -111,26 +111,28 @@ function Cart() {
     return (
       <div className={`min-h-screen ${darkMode ? 'bg-black text-white' : 'bg-purple-100 text-black'}`}>
         <Header />
-        <p className="text-center mt-20 font-semibold text-xl">
-          🛒 {t('cart_empty')}
-        </p>
+        <p className="text-center mt-20 font-semibold text-xl">🛒 {t('cart_empty')}</p>
       </div>
     );
 
   return (
-    <div className={`min-h-screen ${darkMode ? 'bg-gray-900 text-white' : 'bg-gradient-to-r from-purple-700 via-pink-600 to-yellow-200 text-black'}`}>
+    <div
+      className={`min-h-screen ${
+        darkMode ? 'bg-gray-900 text-white' : 'bg-gradient-to-r from-purple-700 via-pink-600 to-yellow-200 text-black'
+      }`}
+    >
       <Header />
 
       <div className="p-6 max-w-5xl mx-auto">
-        <h2 className="text-4xl font-extrabold mb-8 text-center drop-shadow">
-          🛒 {t('cart')}
-        </h2>
+        <h2 className="text-4xl font-extrabold mb-8 text-center drop-shadow">🛒 {t('cart')}</h2>
 
         <div className="space-y-6">
           {cart.map((item, index) => (
             <div
               key={index}
-              className={`rounded-xl shadow-lg p-5 flex items-center gap-6 hover:shadow-2xl transition-shadow duration-300 ${darkMode ? 'bg-gray-800 text-white' : 'bg-white text-gray-900'}`}
+              className={`rounded-xl shadow-lg p-5 flex items-center gap-6 hover:shadow-2xl transition-shadow duration-300 ${
+                darkMode ? 'bg-gray-800 text-white' : 'bg-white text-gray-900'
+              }`}
             >
               <img
                 src={item.image || 'https://dummyimage.com/100x100/000/fff.png&text=No+Image'}
@@ -139,8 +141,12 @@ function Cart() {
               />
               <div className="flex-grow">
                 <h4 className="text-xl font-semibold mb-1">{item.name}</h4>
-                <p>{t('quantity')}: <span className="font-medium">{item.quantity}</span></p>
-                <p>{t('type_of_sale')}: <span className="font-medium">{item.type}</span></p>
+                <p>
+                  {t('quantity')}: <span className="font-medium">{item.quantity}</span>
+                </p>
+                <p>
+                  {t('type_of_sale')}: <span className="font-medium">{item.type}</span>
+                </p>
                 <p className="mt-2 font-bold">
                   {t('total_price')}: {item.price * item.quantity} {t('currency')}
                 </p>
